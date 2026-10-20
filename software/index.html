@@ -4,132 +4,90 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StopLeak — Painel de Controle</title>
-<!-- Script de Persistência de Acessibilidade (Cole no <head> de TODAS as páginas) -->
-<script>
-  function aplicarAcessibilidadeGlobal() {
-    const altoContraste = localStorage.getItem('stopLeak_altoContraste') === 'true';
-    const tamanhoFonte = localStorage.getItem('stopLeak_tamanhoFonte') || '100';
 
-    // Aplica Alto Contraste no HTML
-    if (altoContraste) {
-      document.documentElement.classList.add('alto-contraste');
-    } else {
-      document.documentElement.classList.remove('alto-contraste');
+  <!-- Script de Persistência de Acessibilidade -->
+  <script>
+    function aplicarAcessibilidadeGlobal() {
+      const altoContraste = localStorage.getItem('stopLeak_altoContraste') === 'true';
+      const tamanhoFonte = localStorage.getItem('stopLeak_tamanhoFonte') || '100';
+
+      if (altoContraste) {
+        document.documentElement.classList.add('alto-contraste');
+      } else {
+        document.documentElement.classList.remove('alto-contraste');
+      }
+
+      document.documentElement.style.fontSize = `${tamanhoFonte}%`;
     }
+    aplicarAcessibilidadeGlobal();
+  </script>
 
-    // Aplica Tamanho de Fonte Global
-    document.documentElement.style.fontSize = `${tamanhoFonte}%`;
-  }
-
-  // Executa imediatamente no carregamento da página
-  aplicarAcessibilidadeGlobal();
-</script>
-
-<!-- Estilos CSS para Alto Contraste-->
-<style>
-  /* --- Estilo Padrão --- */
-  body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f2f7f9;
-    color: #1e293b;
-  }
-
-  /* --- Modo de Alto Contraste Ajustado --- */
-  html.alto-contraste body {
-    background-color: #0b0f19 !important;
-    color: #ffffff !important;
-  }
-
-  /* Cabeçalho e Rodapé */
-  html.alto-contraste header,
-  html.alto-contraste footer {
-    background-color: #111827 !important;
-    border-color: #374151 !important;
-  }
-
-  /* Cards e Contêineres */
-  html.alto-contraste main div.bg-white,
-  html.alto-contraste main div.bg-\[\#e7f0f5\],
-  html.alto-contraste main div.bg-\[\#eaf4f8\] {
-    background-color: #1e293b !important;
-    border-color: #475569 !important;
-  }
-
-  /* Títulos em branco puro */
-  html.alto-contraste h1,
-  html.alto-contraste h2,
-  html.alto-contraste h3,
-  html.alto-contraste h4 {
-    color: #ffffff !important;
-  }
-
-  /* Textos principais e rótulos dos cards em branco */
-  html.alto-contraste .text-slate-900,
-  html.alto-contraste .text-slate-800,
-  html.alto-contraste .text-slate-700,
-  html.alto-contraste .text-slate-600 {
-    color: #ffffff !important;
-  }
-
-  /* Subtextos em cinza claro legível */
-  html.alto-contraste .text-slate-500 {
-    color: #94a3b8 !important;
-  }
-
-  /* Destaque e visibilidade dos círculos dos ícones superiores */
-  html.alto-contraste .bg-emerald-50,
-  html.alto-contraste .bg-sky-50,
-  html.alto-contraste .bg-blue-50,
-  html.alto-contraste .bg-red-50,
-  html.alto-contraste .bg-amber-50 {
-    background-color: #334155 !important;
-    border-color: #64748b !important;
-  }
-
-  /* Forçar cores vibrantes nos ícones para destacá-los no fundo escuro */
-  html.alto-contraste .text-emerald-600 {
-    color: #34d399 !important;
-  }
-  html.alto-contraste .text-sky-600 {
-    color: #38bdf8 !important;
-  }
-  html.alto-contraste .text-amber-500,
-  html.alto-contraste .text-amber-600 {
-    color: #fbbf24 !important;
-  }
-  html.alto-contraste .text-red-600 {
-    color: #f87171 !important;
-  }
-
-  /* Botões de navegação inativos */
-  html.alto-contraste nav a:not(.bg-\[\#005288\]):not(.bg-\[\#026aa7\]) {
-    color: #ffffff !important;
-    border: 1px solid #475569 !important;
-  }
-
-  /* Botões de simulação e botões secundários */
-  html.alto-contraste button.bg-white,
-  html.alto-contraste button.bg-slate-50 {
-    background-color: #334155 !important;
-    color: #ffffff !important;
-    border-color: #64748b !important;
-  }
-</style>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-
-  <!-- Lucide Icons via UMD (mesma versão estável das outras abas) -->
-  <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
-
-  <!-- Fonte Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+  <!-- Estilos CSS para Alto Contraste -->
   <style>
     body {
       font-family: 'Inter', sans-serif;
       background-color: #f2f7f9;
       color: #1e293b;
     }
+
+    html.alto-contraste body {
+      background-color: #0b0f19 !important;
+      color: #ffffff !important;
+    }
+
+    html.alto-contraste header,
+    html.alto-contraste footer {
+      background-color: #111827 !important;
+      border-color: #374151 !important;
+    }
+
+    html.alto-contraste main div.bg-white,
+    html.alto-contraste main div.bg-\[\#e7f0f5\] {
+      background-color: #1e293b !important;
+      border-color: #475569 !important;
+    }
+
+    html.alto-contraste h1,
+    html.alto-contraste h2,
+    html.alto-contraste h3,
+    html.alto-contraste h4 {
+      color: #ffffff !important;
+    }
+
+    html.alto-contraste .text-slate-900,
+    html.alto-contraste .text-slate-800,
+    html.alto-contraste .text-slate-700,
+    html.alto-contraste .text-slate-600 {
+      color: #ffffff !important;
+    }
+
+    html.alto-contraste .text-slate-500 {
+      color: #94a3b8 !important;
+    }
+
+    html.alto-contraste nav a:not(.bg-\[\#005288\]) {
+      color: #ffffff !important;
+      border: 1px solid #475569 !important;
+    }
+
+    html.alto-contraste button.bg-white,
+    html.alto-contraste button.bg-slate-50 {
+      background-color: #334155 !important;
+      color: #ffffff !important;
+      border-color: #64748b !important;
+    }
+  </style>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+
+  <!-- Fonte Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
     .card-transition {
       transition: all 0.25s ease-in-out;
     }
@@ -184,7 +142,7 @@
 
       <!-- Grid de 6 Cards de Status -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-6">
-        
+
         <!-- Card 1: Status do Sistema -->
         <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
           <div class="flex items-center justify-between mb-3">
@@ -381,12 +339,33 @@
     </div>
   </div>
 
-  <!-- Lógica JavaScript Estável -->
+  <!-- Lógica JavaScript Principal Ajustada -->
   <script>
-    // Renderiza ícones
     lucide.createIcons();
 
-    // Estado Geral
+    const CHAVE_HISTORICO = 'stopLeak_historico_eventos';
+
+    // Gravação no LocalStorage
+    function registrarNovoEvento(statusTexto, tipoStatus, vazaoTexto, acaoTexto, descricaoTexto) {
+      const dados = localStorage.getItem(CHAVE_HISTORICO);
+      const historico = dados ? JSON.parse(dados) : [];
+      const agora = new Date();
+
+      const novoEvento = {
+        data: agora.toLocaleDateString('pt-BR'),
+        hora: agora.toLocaleTimeString('pt-BR'),
+        status: statusTexto,
+        tipo: tipoStatus,
+        vazao: vazaoTexto,
+        acao: acaoTexto,
+        descricao: descricaoTexto
+      };
+
+      historico.unshift(novoEvento);
+      localStorage.setItem(CHAVE_HISTORICO, JSON.stringify(historico));
+    }
+
+    // Estado Geral do Painel
     const state = {
       valvulaAberta: true,
       bombaLigada: true,
@@ -419,30 +398,92 @@
       }, 1200);
     }
 
+    // Captura o valor exato no visor
+    function obterVazaoDoVisor() {
+      const el = document.getElementById('val-vazao');
+      if (el && el.innerText !== '0,0') {
+        return `${el.innerText} L/min`;
+      }
+      return `${state.vazaoAtual.toFixed(1).replace('.', ',')} L/min`;
+    }
+
+    // Ação da Válvula
     function toggleValvula() {
       const acao = state.valvulaAberta ? 'FECHAR' : 'ABRIR';
       showModal(
         `Confirmar Válvula`,
         `Tem certeza que deseja ${acao.toLowerCase()} a válvula principal do sistema?`,
         () => {
+          // Captura a vazão ANTES de fechar a válvula
+          const vazaoNoMomento = obterVazaoDoVisor();
+          
           state.valvulaAberta = !state.valvulaAberta;
-          updateUI();
+          
+          if (state.valvulaAberta) {
+            state.vazaoAtual = 3.1;
+            updateUI();
+            registrarNovoEvento(
+              'Válvula ABERTA',
+              'valvula',
+              '3,1 L/min',
+              'Abertura manual via Painel',
+              'A válvula solenoide foi aberta manualmente pelo usuário através do Painel de Controle.'
+            );
+          } else {
+            updateUI();
+            // Ao fechar, salva a vazão que estava a passar no momento do encerramento
+            const vazaoSalva = (vazaoNoMomento !== '0,0 L/min') ? vazaoNoMomento : '3,1 L/min';
+            registrarNovoEvento(
+              'Válvula FECHADA',
+              'valvula',
+              vazaoSalva,
+              'Fechamento manual via Painel',
+              'A válvula solenoide foi fechada manualmente pelo usuário através do Painel de Controle.'
+            );
+          }
         }
       );
     }
 
+    // Ação da Bomba
     function toggleBomba() {
       const acao = state.bombaLigada ? 'DESLIGAR' : 'LIGAR';
       showModal(
         `Confirmar Bomba`,
         `Tem certeza que deseja ${acao.toLowerCase()} a bomba de água?`,
         () => {
+          // Captura a vazão ANTES de desligar a bomba
+          const vazaoNoMomento = obterVazaoDoVisor();
+
           state.bombaLigada = !state.bombaLigada;
-          updateUI();
+
+          if (state.bombaLigada) {
+            state.vazaoAtual = 12.0;
+            updateUI();
+            registrarNovoEvento(
+              'Bomba LIGADA',
+              'bomba',
+              '12,0 L/min',
+              'Acionamento manual via Painel',
+              'A bomba de água foi ligada manualmente através do Painel de Controle pelo usuário.'
+            );
+          } else {
+            updateUI();
+            // Ao desligar, registra a vazão que a bomba estava a debitar no instante do desligamento
+            const vazaoSalva = (vazaoNoMomento !== '0,0 L/min') ? vazaoNoMomento : '12,0 L/min';
+            registrarNovoEvento(
+              'Bomba DESLIGADA',
+              'bomba',
+              vazaoSalva,
+              'Desativação manual via Painel',
+              'A bomba de água foi desligada manualmente através do Painel de Controle pelo usuário.'
+            );
+          }
         }
       );
     }
 
+    // Simulação de cenários
     function setSimulacao(cenario) {
       state.cenario = cenario;
 
@@ -451,17 +492,42 @@
         state.valvulaAberta = true;
         state.bombaLigada = true;
         state.vazaoAtual = 3.1;
+        updateUI();
+
+        registrarNovoEvento(
+          'Normal',
+          'normal',
+          '3,1 L/min',
+          'Simulação de fluxo normal',
+          'O sistema retornou à operação regular com parâmetros normais de vazão.'
+        );
       } else if (cenario === 'vazamento') {
         state.espConectado = true;
         state.valvulaAberta = true;
         state.bombaLigada = true;
         state.vazaoAtual = 16.4;
+        updateUI();
+
+        registrarNovoEvento(
+          'Alerta de vazamento',
+          'vazamento',
+          '16,4 L/min',
+          'Vazamento simulado',
+          'Vazão crítica de água detectada pelo sensor YF-S201 durante a simulação em tempo real.'
+        );
       } else if (cenario === 'desconectado') {
         state.espConectado = false;
         state.vazaoAtual = 0.0;
-      }
+        updateUI();
 
-      updateUI();
+        registrarNovoEvento(
+          'Desconexão',
+          'conexao',
+          '0,0 L/min',
+          'Modo seguro ativado',
+          'Perda de comunicação com o microcontrolador ESP32 registrada no sistema.'
+        );
+      }
     }
 
     function updateUI() {
