@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StopLeak — Configurações</title>
+<!-- Script de Persistência de Acessibilidade (Cole no <head> de TODAS as páginas) -->
+<script>
+  function aplicarAcessibilidadeGlobal() {
+    const altoContraste = localStorage.getItem('stopLeak_altoContraste') === 'true';
+    const tamanhoFonte = localStorage.getItem('stopLeak_tamanhoFonte') || '100';
+
+    // Aplica Alto Contraste no HTML
+    if (altoContraste) {
+      document.documentElement.classList.add('alto-contraste');
+    } else {
+      document.documentElement.classList.remove('alto-contraste');
+    }
+
+    // Aplica Tamanho de Fonte Global
+    document.documentElement.style.fontSize = `${tamanhoFonte}%`;
+  }
+
+  // Executa imediatamente no carregamento da página
+  aplicarAcessibilidadeGlobal();
+</script>
+
+<!-- Estilos CSS para Alto Contraste (Cole no <style> de TODAS as páginas) -->
+<style>
+  /* --- Estilo Padrão --- */
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f2f7f9;
+    color: #1e293b;
+  }
+
+  /* --- Modo de Alto Contraste Ajustado --- */
+  html.alto-contraste body {
+    background-color: #0b0f19 !important;
+    color: #ffffff !important;
+  }
+
+  /* Cabeçalho e Rodapé */
+  html.alto-contraste header,
+  html.alto-contraste footer {
+    background-color: #111827 !important;
+    border-color: #374151 !important;
+  }
+
+  /* Cards e Contêineres */
+  html.alto-contraste main div.bg-white,
+  html.alto-contraste main div.bg-\[\#e7f0f5\],
+  html.alto-contraste main div.bg-\[\#eaf4f8\] {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+  }
+
+  /* Títulos em branco puro */
+  html.alto-contraste h1,
+  html.alto-contraste h2,
+  html.alto-contraste h3,
+  html.alto-contraste h4 {
+    color: #ffffff !important;
+  }
+
+  /* Textos principais e rótulos dos cards em branco */
+  html.alto-contraste .text-slate-900,
+  html.alto-contraste .text-slate-800,
+  html.alto-contraste .text-slate-700,
+  html.alto-contraste .text-slate-600 {
+    color: #ffffff !important;
+  }
+
+  /* Subtextos em cinza claro legível */
+  html.alto-contraste .text-slate-500 {
+    color: #94a3b8 !important;
+  }
+
+  /* Destaque e visibilidade dos círculos dos ícones superiores */
+  html.alto-contraste .bg-emerald-50,
+  html.alto-contraste .bg-sky-50,
+  html.alto-contraste .bg-blue-50,
+  html.alto-contraste .bg-red-50,
+  html.alto-contraste .bg-amber-50 {
+    background-color: #334155 !important;
+    border-color: #64748b !important;
+  }
+
+  /* Forçar cores vibrantes nos ícones para destacá-los no fundo escuro */
+  html.alto-contraste .text-emerald-600 {
+    color: #34d399 !important;
+  }
+  html.alto-contraste .text-sky-600 {
+    color: #38bdf8 !important;
+  }
+  html.alto-contraste .text-amber-500,
+  html.alto-contraste .text-amber-600 {
+    color: #fbbf24 !important;
+  }
+  html.alto-contraste .text-red-600 {
+    color: #f87171 !important;
+  }
+
+  /* Botões de navegação inativos */
+  html.alto-contraste nav a:not(.bg-\[\#005288\]):not(.bg-\[\#026aa7\]) {
+    color: #ffffff !important;
+    border: 1px solid #475569 !important;
+  }
+
+  /* Botões de simulação e botões secundários */
+  html.alto-contraste button.bg-white,
+  html.alto-contraste button.bg-slate-50 {
+    background-color: #334155 !important;
+    color: #ffffff !important;
+    border-color: #64748b !important;
+  }
+</style>
+  <!-- Desativa aviso de desenvolvimento do Tailwind no console -->
+  <script>
+    const origWarn = console.warn;
+    console.warn = function(...args) {
+      if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+      origWarn.apply(console, args);
+    };
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+
+  <!-- Fonte Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f2f7f9;
+      color: #1e293b;
+    }
+
+    /* Estilização customizada para os sliders (Range Input) */
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+    }
+
+    input[type=range]:focus {
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 6px;
+      cursor: pointer;
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      background: #005288;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      transition: background-color 0.15s ease;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      background: #003d66;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased">
+
+  <div>
+    <!-- Cabeçalho (Header) -->
+   <header class="bg-white border-b border-slate-200/80 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="bg-[#005288] text-white p-2 rounded-xl flex items-center justify-center shadow-sm">
+        <i data-lucide="droplet" class="w-5 h-5 fill-current"></i>
+      </div>
+      <span class="text-xl font-bold tracking-tight text-slate-800">StopLeak</span>
+    </div>
+
+    <nav class="hidden md:flex items-center gap-1 sm:gap-2">
+      <a href="index.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+        <i data-lucide="gauge" class="w-4 h-4"></i>
+        Painel
+      </a>
+      <a href="monitoramento.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+        <i data-lucide="activity" class="w-4 h-4"></i>
+        Monitoramento
+      </a>
+      <a href="historico.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+        <i data-lucide="history" class="w-4 h-4"></i>
+        Histórico
+      </a>
+      <a href="configuracoes.html" class="bg-[#005288] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition shadow-sm">
+        <i data-lucide="settings" class="w-4 h-4"></i>
+        Configurações
+      </a>
+      <a href="ajuda.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+        <i data-lucide="help-circle" class="w-4 h-4"></i>
+        Ajuda
+      </a>
+    </nav>
+  </div>
+</header>
+    <!-- Conteúdo Principal -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      
+      <!-- Título da página -->
+      <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Configurações</h1>
+      </div>
+
+      <div class="space-y-6">
+
+        <!-- Bloco 1: Parâmetros de detecção de vazamento -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm">
+          <h2 class="text-base font-bold text-slate-900 mb-5">Parâmetros de detecção de vazamento</h2>
+
+          <div class="space-y-6">
+            <!-- Limite de vazão -->
+            <div>
+              <div class="flex justify-between items-center text-sm font-medium text-slate-700 mb-2">
+                <span>Limite de vazão para alerta: <strong id="lbl-limite" class="text-slate-900">6 L/min</strong></span>
+              </div>
+              <input type="range" id="range-limite" min="1" max="15" value="6" oninput="document.getElementById('lbl-limite').innerText = this.value + ' L/min'">
+              <p class="text-xs text-slate-500 mt-2">Vazões acima deste valor são tratadas como possível vazamento.</p>
+            </div>
+
+            <!-- Duração mínima -->
+            <div>
+              <div class="flex justify-between items-center text-sm font-medium text-slate-700 mb-2">
+                <span>Duração mínima acima do limite: <strong id="lbl-duracao" class="text-slate-900">10 segundos</strong></span>
+              </div>
+              <input type="range" id="range-duracao" min="1" max="60" value="10" oninput="document.getElementById('lbl-duracao').innerText = this.value + ' segundos'">
+              <p class="text-xs text-slate-500 mt-2">Evita alertas falsos causados por picos rápidos de consumo.</p>
+            </div>
+
+            <!-- Toggle Fechar Válvula -->
+            <div class="border border-slate-200/90 rounded-xl p-4 flex items-center justify-between">
+              <span class="text-sm font-medium text-slate-800">Fechar a válvula automaticamente ao detectar vazamento</span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" checked class="sr-only peer">
+                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#005288]"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco 2: Conexão do dispositivo ESP32 -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm">
+          <h2 class="text-base font-bold text-slate-900 mb-5">Conexão do dispositivo ESP32</h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-5 gap-x-8 text-sm">
+            <div>
+              <span class="text-xs text-slate-500 block mb-1">Situação</span>
+              <div class="flex items-center gap-2 font-semibold text-slate-800">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+                Conectado
+              </div>
+            </div>
+
+            <div>
+              <span class="text-xs text-slate-500 block mb-1">Rede Wi-Fi</span>
+              <span class="font-semibold text-slate-800">StopLeak-Casa (2,4 GHz)</span>
+            </div>
+
+            <div>
+              <span class="text-xs text-slate-500 block mb-1">Endereço IP</span>
+              <span class="font-semibold text-slate-800">192.168.0.42</span>
+            </div>
+
+            <div>
+              <span class="text-xs text-slate-500 block mb-1">Firmware</span>
+              <span class="font-semibold text-slate-800">v1.4.2 · sensor YF-S201</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco 3: Preferências de notificação -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm">
+          <h2 class="text-base font-bold text-slate-900 mb-5">Preferências de notificação</h2>
+
+          <div class="space-y-3">
+            <!-- Item 1 -->
+            <div class="border border-slate-200/90 rounded-xl p-4 flex items-center justify-between">
+              <span class="text-sm font-medium text-slate-800">Alerta sonoro no navegador</span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" checked class="sr-only peer">
+                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#005288]"></div>
+              </label>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="border border-slate-200/90 rounded-xl p-4 flex items-center justify-between">
+              <span class="text-sm font-medium text-slate-800">Notificação push no celular</span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" checked class="sr-only peer">
+                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#005288]"></div>
+              </label>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="border border-slate-200/90 rounded-xl p-4 flex items-center justify-between">
+              <span class="text-sm font-medium text-slate-800">Resumo diário por e-mail</span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" class="sr-only peer">
+                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#005288]"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco 4: Acessibilidade (Atualizado) -->
+<div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm">
+  <h2 class="text-base font-bold text-slate-900 mb-5">Acessibilidade</h2>
+
+  <div class="space-y-5">
+    <!-- Alto contraste -->
+    <div class="border border-slate-200/90 rounded-xl p-4 flex items-center justify-between">
+      <span class="text-sm font-medium text-slate-800">Modo de alto contraste</span>
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" id="chk-alto-contraste" onchange="toggleAltoContraste(this.checked)" class="sr-only peer">
+        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#005288]"></div>
+      </label>
+    </div>
+
+    <!-- Tamanho da fonte -->
+    <div>
+      <div class="flex justify-between items-center text-sm font-medium text-slate-700 mb-2">
+        <span>Tamanho da fonte: <strong id="lbl-fonte" class="text-slate-900">100%</strong></span>
+      </div>
+      <input type="range" id="range-fonte" min="80" max="130" value="100" step="5" oninput="alterarTamanhoFonte(this.value)">
+    </div>
+
+    <!-- Botão Restaurar -->
+    <div class="pt-2">
+      <button onclick="restaurarAcessibilidade()" class="bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-xs font-semibold transition">
+        Restaurar padrões de acessibilidade
+      </button>
+    </div>
+  </div>
+</div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Rodapé -->
+  <footer class="py-6 border-t border-slate-200/60 mt-10">
+    <p class="text-center text-xs text-slate-500 font-medium">
+      StopLeak — monitoramento inteligente de vazamentos
+    </p>
+  </footer>
+
+  <!-- Lógica JavaScript -->
+ <script>
+  lucide.createIcons();
+
+  // Carrega os estados iniciais dos controles na página de Configurações
+  document.addEventListener('DOMContentLoaded', () => {
+    const altoContrasteAtivo = localStorage.getItem('stopLeak_altoContraste') === 'true';
+    const tamanhoFonte = localStorage.getItem('stopLeak_tamanhoFonte') || '100';
+
+    document.getElementById('chk-alto-contraste').checked = altoContrasteAtivo;
+    document.getElementById('range-fonte').value = tamanhoFonte;
+    document.getElementById('lbl-fonte').innerText = `${tamanhoFonte}%`;
+  });
+
+  // Alterna e salva o Modo Alto Contraste
+  function toggleAltoContraste(ativo) {
+    localStorage.setItem('stopLeak_altoContraste', ativo);
+    aplicarAcessibilidadeGlobal();
+  }
+
+  // Altera e salva o Tamanho da Fonte
+  function alterarTamanhoFonte(valor) {
+    document.getElementById('lbl-fonte').innerText = `${valor}%`;
+    localStorage.setItem('stopLeak_tamanhoFonte', valor);
+    aplicarAcessibilidadeGlobal();
+  }
+
+  // Restaura os valores padrão
+  function restaurarAcessibilidade() {
+    localStorage.setItem('stopLeak_altoContraste', 'false');
+    localStorage.setItem('stopLeak_tamanhoFonte', '100');
+    
+    document.getElementById('chk-alto-contraste').checked = false;
+    document.getElementById('range-fonte').value = 100;
+    document.getElementById('lbl-fonte').innerText = '100%';
+
+    aplicarAcessibilidadeGlobal();
+  }
+</script>
+</body>
+</html>

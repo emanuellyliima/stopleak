@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StopLeak — Histórico de Ocorrências</title>
+<!-- Script de Persistência de Acessibilidade (Cole no <head> de TODAS as páginas) -->
+<script>
+  function aplicarAcessibilidadeGlobal() {
+    const altoContraste = localStorage.getItem('stopLeak_altoContraste') === 'true';
+    const tamanhoFonte = localStorage.getItem('stopLeak_tamanhoFonte') || '100';
+
+    // Aplica Alto Contraste no HTML
+    if (altoContraste) {
+      document.documentElement.classList.add('alto-contraste');
+    } else {
+      document.documentElement.classList.remove('alto-contraste');
+    }
+
+    // Aplica Tamanho de Fonte Global
+    document.documentElement.style.fontSize = `${tamanhoFonte}%`;
+  }
+
+  // Executa imediatamente no carregamento da página
+  aplicarAcessibilidadeGlobal();
+</script>
+
+<!-- Estilos CSS para Alto Contraste (Cole no <style> de TODAS as páginas) -->
+<style>
+  /* --- Estilo Padrão --- */
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f2f7f9;
+    color: #1e293b;
+  }
+
+  /* --- Modo de Alto Contraste Ajustado --- */
+  html.alto-contraste body {
+    background-color: #0b0f19 !important;
+    color: #ffffff !important;
+  }
+
+  /* Cabeçalho e Rodapé */
+  html.alto-contraste header,
+  html.alto-contraste footer {
+    background-color: #111827 !important;
+    border-color: #374151 !important;
+  }
+
+  /* Cards e Contêineres */
+  html.alto-contraste main div.bg-white,
+  html.alto-contraste main div.bg-\[\#e7f0f5\],
+  html.alto-contraste main div.bg-\[\#eaf4f8\] {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+  }
+
+  /* Títulos em branco puro */
+  html.alto-contraste h1,
+  html.alto-contraste h2,
+  html.alto-contraste h3,
+  html.alto-contraste h4 {
+    color: #ffffff !important;
+  }
+
+  /* Textos principais e rótulos dos cards em branco */
+  html.alto-contraste .text-slate-900,
+  html.alto-contraste .text-slate-800,
+  html.alto-contraste .text-slate-700,
+  html.alto-contraste .text-slate-600 {
+    color: #ffffff !important;
+  }
+
+  /* Subtextos em cinza claro legível */
+  html.alto-contraste .text-slate-500 {
+    color: #94a3b8 !important;
+  }
+
+  /* Destaque e visibilidade dos círculos dos ícones superiores */
+  html.alto-contraste .bg-emerald-50,
+  html.alto-contraste .bg-sky-50,
+  html.alto-contraste .bg-blue-50,
+  html.alto-contraste .bg-red-50,
+  html.alto-contraste .bg-amber-50 {
+    background-color: #334155 !important;
+    border-color: #64748b !important;
+  }
+
+  /* Forçar cores vibrantes nos ícones para destacá-los no fundo escuro */
+  html.alto-contraste .text-emerald-600 {
+    color: #34d399 !important;
+  }
+  html.alto-contraste .text-sky-600 {
+    color: #38bdf8 !important;
+  }
+  html.alto-contraste .text-amber-500,
+  html.alto-contraste .text-amber-600 {
+    color: #fbbf24 !important;
+  }
+  html.alto-contraste .text-red-600 {
+    color: #f87171 !important;
+  }
+
+  /* Botões de navegação inativos */
+  html.alto-contraste nav a:not(.bg-\[\#005288\]):not(.bg-\[\#026aa7\]) {
+    color: #ffffff !important;
+    border: 1px solid #475569 !important;
+  }
+
+  /* Botões de simulação e botões secundários */
+  html.alto-contraste button.bg-white,
+  html.alto-contraste button.bg-slate-50 {
+    background-color: #334155 !important;
+    color: #ffffff !important;
+    border-color: #64748b !important;
+  }
+</style>
+  <!-- Desativa aviso de desenvolvimento do Tailwind no console -->
+  <script>
+    const origWarn = console.warn;
+    console.warn = function(...args) {
+      if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+      origWarn.apply(console, args);
+    };
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+
+  <!-- Fonte Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f2f7f9;
+      color: #1e293b;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased">
+
+  <div>
+    <!-- Cabeçalho (Header) -->
+    <header class="bg-white border-b border-slate-200/80 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="bg-[#005288] text-white p-2 rounded-xl flex items-center justify-center shadow-sm">
+        <i data-lucide="droplet" class="w-5 h-5 fill-current"></i>
+      </div>
+      <span class="text-xl font-bold tracking-tight text-slate-800">StopLeak</span>
+    </div>
+
+    <nav class="hidden md:flex items-center gap-1 sm:gap-2">
+      <a href="index.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+        <i data-lucide="gauge" class="w-4 h-4"></i>
+        Painel
+      </a>
+      <a href="monitoramento.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+        <i data-lucide="activity" class="w-4 h-4"></i>
+        Monitoramento
+      </a>
+      <a href="historico.html" class="bg-[#005288] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition shadow-sm">
+        <i data-lucide="history" class="w-4 h-4"></i>
+        Histórico
+      </a>
+      <a href="configuracoes.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+        <i data-lucide="settings" class="w-4 h-4"></i>
+        Configurações
+      </a>
+      <a href="ajuda.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+        <i data-lucide="help-circle" class="w-4 h-4"></i>
+        Ajuda
+      </a>
+    </nav>
+  </div>
+</header>
+
+    <!-- Conteúdo do Histórico -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      
+      <!-- Título da página -->
+      <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Histórico de ocorrências</h1>
+      </div>
+
+      <!-- Tabela de Ocorrências -->
+      <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200/80 text-xs font-semibold text-slate-500">
+                <th class="py-4 px-6">Data</th>
+                <th class="py-4 px-6">Hora</th>
+                <th class="py-4 px-6">Status</th>
+                <th class="py-4 px-6">Vazão</th>
+                <th class="py-4 px-6">Ação tomada</th>
+                <th class="py-4 px-6 text-center">Detalhes</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-sm">
+              
+              <!-- Linha 1 -->
+              <tr class="hover:bg-slate-50/50 transition">
+                <td class="py-4 px-6 text-slate-700">08/09/2026</td>
+                <td class="py-4 px-6 text-slate-700">07:14</td>
+                <td class="py-4 px-6">
+                  <div class="flex items-center gap-1.5 text-red-600 font-medium">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-500"></i>
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-red-600"></i>
+                    <span>Alerta de vazamento</span>
+                  </div>
+                </td>
+                <td class="py-4 px-6 text-slate-700">9,4 L/min</td>
+                <td class="py-4 px-6 text-slate-700">Válvula fechada automaticamente</td>
+                <td class="py-4 px-6 text-center">
+                  <button onclick="verDetalhes('08/09/2026', '07:14', 'Alerta de vazamento', '9,4 L/min', 'Válvula fechada automaticamente', 'Vazão anormal detectada pelo sensor YF-S201 mantida por mais de 45 segundos. Sistema ativou o corte emergencial e enviou notificação.')" class="bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl text-xs font-medium inline-flex items-center gap-1.5 transition shadow-xs">
+                    <i data-lucide="search" class="w-3.5 h-3.5 text-slate-500"></i>
+                    Ver
+                  </button>
+                </td>
+              </tr>
+
+              <!-- Linha 2 -->
+              <tr class="hover:bg-slate-50/50 transition">
+                <td class="py-4 px-6 text-slate-700">07/09/2026</td>
+                <td class="py-4 px-6 text-slate-700">21:02</td>
+                <td class="py-4 px-6">
+                  <div class="flex items-center gap-1.5 text-amber-600 font-medium">
+                    <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+                    <i data-lucide="wifi-off" class="w-4 h-4 text-amber-600"></i>
+                    <span>Desconexão</span>
+                  </div>
+                </td>
+                <td class="py-4 px-6 text-slate-700">0,0 L/min</td>
+                <td class="py-4 px-6 text-slate-700">Modo seguro ativado</td>
+                <td class="py-4 px-6 text-center">
+                  <button onclick="verDetalhes('07/09/2026', '21:02', 'Desconexão', '0,0 L/min', 'Modo seguro ativado', 'Perda de pulso Keep-Alive do microcontrolador ESP32. O sistema acionou a prevenção por timeout de rede.')" class="bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl text-xs font-medium inline-flex items-center gap-1.5 transition shadow-xs">
+                    <i data-lucide="search" class="w-3.5 h-3.5 text-slate-500"></i>
+                    Ver
+                  </button>
+                </td>
+              </tr>
+
+              <!-- Linha 3 -->
+              <tr class="hover:bg-slate-50/50 transition">
+                <td class="py-4 px-6 text-slate-700">07/09/2026</td>
+                <td class="py-4 px-6 text-slate-700">18:37</td>
+                <td class="py-4 px-6">
+                  <div class="flex items-center gap-1.5 text-emerald-600 font-medium">
+                    <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+                    <span>Normal</span>
+                  </div>
+                </td>
+                <td class="py-4 px-6 text-slate-700">3,1 L/min</td>
+                <td class="py-4 px-6 text-slate-700">Consumo dentro do padrão</td>
+                <td class="py-4 px-6 text-center">
+                  <button onclick="verDetalhes('07/09/2026', '18:37', 'Normal', '3,1 L/min', 'Consumo dentro do padrão', 'Fluxo estabilizado dentro do limite de consumo regular residencial.')" class="bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl text-xs font-medium inline-flex items-center gap-1.5 transition shadow-xs">
+                    <i data-lucide="search" class="w-3.5 h-3.5 text-slate-500"></i>
+                    Ver
+                  </button>
+                </td>
+              </tr>
+
+              <!-- Linha 4 -->
+              <tr class="hover:bg-slate-50/50 transition">
+                <td class="py-4 px-6 text-slate-700">05/09/2026</td>
+                <td class="py-4 px-6 text-slate-700">12:20</td>
+                <td class="py-4 px-6">
+                  <div class="flex items-center gap-1.5 text-red-600 font-medium">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-500"></i>
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-red-600"></i>
+                    <span>Alerta de vazamento</span>
+                  </div>
+                </td>
+                <td class="py-4 px-6 text-slate-700">8,7 L/min</td>
+                <td class="py-4 px-6 text-slate-700">Válvula fechada manualmente pelo usuário</td>
+                <td class="py-4 px-6 text-center">
+                  <button onclick="verDetalhes('05/09/2026', '12:20', 'Alerta de vazamento', '8,7 L/min', 'Válvula fechada manualmente pelo usuário', 'Vazamento detectado e interrompido via comando manual acionado no Painel de Controle pelo usuário.')" class="bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl text-xs font-medium inline-flex items-center gap-1.5 transition shadow-xs">
+                    <i data-lucide="search" class="w-3.5 h-3.5 text-slate-500"></i>
+                    Ver
+                  </button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Rodapé -->
+  <footer class="py-6 border-t border-slate-200/60 mt-10">
+    <p class="text-center text-xs text-slate-500 font-medium">
+      StopLeak — monitoramento inteligente de vazamentos
+    </p>
+  </footer>
+
+  <!-- Modal de Detalhes da Ocorrência -->
+  <div id="modal-detalhes" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-200">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-100">
+      <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+        <h3 class="text-lg font-bold text-slate-900">Detalhes da Ocorrência</h3>
+        <button onclick="fecharModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-sm">
+        <div class="flex justify-between py-1 border-b border-slate-50">
+          <span class="text-slate-500 font-medium">Data e Horário:</span>
+          <span id="m-data-hora" class="text-slate-800 font-semibold">--</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-50">
+          <span class="text-slate-500 font-medium">Status do Registro:</span>
+          <span id="m-status" class="text-slate-800 font-semibold">--</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-50">
+          <span class="text-slate-500 font-medium">Vazão Registrada:</span>
+          <span id="m-vazao" class="text-slate-800 font-semibold">--</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-50">
+          <span class="text-slate-500 font-medium">Ação Executada:</span>
+          <span id="m-acao" class="text-slate-800 font-semibold">--</span>
+        </div>
+        <div class="pt-2">
+          <span class="text-slate-500 font-medium block mb-1">Descrição Técnica:</span>
+          <p id="m-descricao" class="text-slate-600 bg-slate-50 p-3 rounded-xl text-xs leading-relaxed border border-slate-100">--</p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button onclick="fecharModal()" class="bg-[#005288] text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-[#003d66] transition">
+          Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lógica JavaScript -->
+  <script>
+    lucide.createIcons();
+
+    function verDetalhes(data, hora, status, vazao, acao, descricao) {
+      document.getElementById('m-data-hora').innerText = `${data} às ${hora}`;
+      document.getElementById('m-status').innerText = status;
+      document.getElementById('m-vazao').innerText = vazao;
+      document.getElementById('m-acao').innerText = acao;
+      document.getElementById('m-descricao').innerText = descricao;
+
+      const modal = document.getElementById('modal-detalhes');
+      modal.classList.remove('hidden');
+      setTimeout(() => modal.classList.remove('opacity-0'), 10);
+    }
+
+    function fecharModal() {
+      const modal = document.getElementById('modal-detalhes');
+      modal.classList.add('opacity-0');
+      setTimeout(() => modal.classList.add('hidden'), 200);
+    }
+  </script>
+</body>
+</html>

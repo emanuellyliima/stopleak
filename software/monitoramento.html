@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StopLeak — Monitoramento</title>
+<!-- Script de Persistência de Acessibilidade (Cole no <head> de TODAS as páginas) -->
+<script>
+  function aplicarAcessibilidadeGlobal() {
+    const altoContraste = localStorage.getItem('stopLeak_altoContraste') === 'true';
+    const tamanhoFonte = localStorage.getItem('stopLeak_tamanhoFonte') || '100';
+
+    // Aplica Alto Contraste no HTML
+    if (altoContraste) {
+      document.documentElement.classList.add('alto-contraste');
+    } else {
+      document.documentElement.classList.remove('alto-contraste');
+    }
+
+    // Aplica Tamanho de Fonte Global
+    document.documentElement.style.fontSize = `${tamanhoFonte}%`;
+  }
+
+  // Executa imediatamente no carregamento da página
+  aplicarAcessibilidadeGlobal();
+</script>
+
+<!-- Estilos CSS para Alto Contraste (Cole no <style> de TODAS as páginas) -->
+<style>
+  /* --- Estilo Padrão --- */
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f2f7f9;
+    color: #1e293b;
+  }
+
+  /* --- Modo de Alto Contraste Ajustado --- */
+  html.alto-contraste body {
+    background-color: #0b0f19 !important;
+    color: #ffffff !important;
+  }
+
+  /* Cabeçalho e Rodapé */
+  html.alto-contraste header,
+  html.alto-contraste footer {
+    background-color: #111827 !important;
+    border-color: #374151 !important;
+  }
+
+  /* Cards e Contêineres */
+  html.alto-contraste main div.bg-white,
+  html.alto-contraste main div.bg-\[\#e7f0f5\],
+  html.alto-contraste main div.bg-\[\#eaf4f8\] {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+  }
+
+  /* Títulos em branco puro */
+  html.alto-contraste h1,
+  html.alto-contraste h2,
+  html.alto-contraste h3,
+  html.alto-contraste h4 {
+    color: #ffffff !important;
+  }
+
+  /* Textos principais e rótulos dos cards em branco */
+  html.alto-contraste .text-slate-900,
+  html.alto-contraste .text-slate-800,
+  html.alto-contraste .text-slate-700,
+  html.alto-contraste .text-slate-600 {
+    color: #ffffff !important;
+  }
+
+  /* Subtextos em cinza claro legível */
+  html.alto-contraste .text-slate-500 {
+    color: #94a3b8 !important;
+  }
+
+  /* Destaque e visibilidade dos círculos dos ícones superiores */
+  html.alto-contraste .bg-emerald-50,
+  html.alto-contraste .bg-sky-50,
+  html.alto-contraste .bg-blue-50,
+  html.alto-contraste .bg-red-50,
+  html.alto-contraste .bg-amber-50 {
+    background-color: #334155 !important;
+    border-color: #64748b !important;
+  }
+
+  /* Forçar cores vibrantes nos ícones para destacá-los no fundo escuro */
+  html.alto-contraste .text-emerald-600 {
+    color: #34d399 !important;
+  }
+  html.alto-contraste .text-sky-600 {
+    color: #38bdf8 !important;
+  }
+  html.alto-contraste .text-amber-500,
+  html.alto-contraste .text-amber-600 {
+    color: #fbbf24 !important;
+  }
+  html.alto-contraste .text-red-600 {
+    color: #f87171 !important;
+  }
+
+  /* Botões de navegação inativos */
+  html.alto-contraste nav a:not(.bg-\[\#005288\]):not(.bg-\[\#026aa7\]) {
+    color: #ffffff !important;
+    border: 1px solid #475569 !important;
+  }
+
+  /* Botões de simulação e botões secundários */
+  html.alto-contraste button.bg-white,
+  html.alto-contraste button.bg-slate-50 {
+    background-color: #334155 !important;
+    color: #ffffff !important;
+    border-color: #64748b !important;
+  }
+</style>
+    <!-- Desativa o aviso de desenvolvimento do Tailwind CDN -->
+    <script>
+        const origWarn = console.warn;
+        console.warn = function(...args) {
+            if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+            origWarn.apply(console, args);
+        };
+    </script>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+
+    <!-- Lucide Icons via UMD -->
+    <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+
+    <!-- Chart.js para o gráfico de linha em tempo real -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Fonte Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f2f7f9;
+            color: #1e293b;
+        }
+        .card-transition {
+            transition: all 0.25s ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased">
+
+    <!-- Container Principal -->
+    <div>
+        <!-- Cabeçalho (Header) -->
+       <header class="bg-white border-b border-slate-200/80 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="bg-[#005288] text-white p-2 rounded-xl flex items-center justify-center shadow-sm">
+        <i data-lucide="droplet" class="w-5 h-5 fill-current"></i>
+      </div>
+      <span class="text-xl font-bold tracking-tight text-slate-800">StopLeak</span>
+    </div>
+
+    <nav class="hidden md:flex items-center gap-1 sm:gap-2">
+      <a href="index.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+        <i data-lucide="gauge" class="w-4 h-4"></i>
+        Painel
+      </a>
+      <a href="monitoramento.html" class="bg-[#005288] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition shadow-sm">
+        <i data-lucide="activity" class="w-4 h-4"></i>
+        Monitoramento
+      </a>
+      <a href="historico.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+        <i data-lucide="history" class="w-4 h-4"></i>
+        Histórico
+      </a>
+      <a href="configuracoes.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+        <i data-lucide="settings" class="w-4 h-4"></i>
+        Configurações
+      </a>
+      <a href="ajuda.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+        <i data-lucide="help-circle" class="w-4 h-4"></i>
+        Ajuda
+      </a>
+    </nav>
+  </div>
+</header>
+
+        <!-- Conteúdo da Página de Monitoramento -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- Título e Botão de Ação Superior -->
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Monitoramento</h1>
+                <button onclick="reiniciarContagem()" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-medium px-4 py-2 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4 text-slate-500"></i>
+                    Reiniciar contagem
+                </button>
+            </div>
+
+            <!-- Box do Gráfico em Tempo Real -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm mb-6">
+                <div class="mb-4">
+                    <h2 class="text-base font-bold text-slate-900">Vazão (L/min) por tempo</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">A linha tracejada indica o limite de 6 L/min configurado para disparo de alerta.</p>
+                </div>
+
+                <!-- Canvas para Chart.js -->
+                <div class="w-full h-72">
+                    <canvas id="flowChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Cards de Métricas (Grid 4 colunas) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+                
+                <!-- Card 1: Vazão Atual -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Vazão atual</span>
+                        <div class="w-9 h-9 rounded-full bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600">
+                            <i data-lucide="activity" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div id="m-vazao" class="text-2xl font-bold text-slate-800">2,5 L/min</div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Volume Total Monitorado -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Volume total monitorado</span>
+                        <div class="w-9 h-9 rounded-full bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600">
+                            <i data-lucide="droplet" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div id="m-volume" class="text-2xl font-bold text-slate-800">23,5 L</div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Tempo de Monitoramento -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Tempo de monitoramento</span>
+                        <div class="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600">
+                            <i data-lucide="timer" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div id="m-tempo" class="text-2xl font-bold text-slate-800">00:01:42</div>
+                        <p class="text-[11px] text-slate-400 mt-1">horas:minutos:segundos</p>
+                    </div>
+                </div>
+
+                <!-- Card 4: Válvula e Bomba -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Válvula e bomba</span>
+                        <div id="m-status-icon" class="w-9 h-9 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
+                            <i data-lucide="waves" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span id="m-status-dot" class="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block shadow-sm"></span>
+                            <span id="m-status-text" class="text-xl font-bold text-slate-800">Aberta · Ligada</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Card Simulação em Tempo Real -->
+            <div class="bg-[#e7f0f5] p-6 rounded-2xl border border-sky-100 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900 mb-1">Simulação em tempo real</h2>
+                <p class="text-xs text-slate-600 mb-5">Use os cenários abaixo para testar todos os estados do sistema sem hardware conectado.</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    
+                    <!-- Cenário 1: Fluxo Normal -->
+                    <button id="sim-normal" onclick="setScenario('normal')" class="bg-[#026aa7] text-white p-3.5 rounded-xl text-left border border-[#026aa7] transition-all flex flex-col justify-between shadow-sm">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="droplet" class="w-4 h-4"></i>
+                                <span class="font-bold text-sm">Fluxo normal</span>
+                            </div>
+                            <span id="badge-normal" class="text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-medium">(ativo)</span>
+                        </div>
+                        <span class="text-[11px] opacity-90 leading-snug">Vazão entre 2 e 4 L/min</span>
+                    </button>
+
+                    <!-- Cenário 2: Disparar Vazamento -->
+                    <button id="sim-vazamento" onclick="setScenario('vazamento')" class="bg-white hover:bg-slate-50 text-slate-700 p-3.5 rounded-xl text-left border border-slate-200/80 transition-all flex flex-col justify-between shadow-sm">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="waves" class="w-4 h-4 text-amber-500"></i>
+                                <span class="font-bold text-sm text-slate-800">Disparar vazamento</span>
+                            </div>
+                            <span id="badge-vazamento" class="hidden text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-medium">(ativo)</span>
+                        </div>
+                        <span class="text-[11px] text-slate-500 leading-snug">Vazão acima do limite</span>
+                    </button>
+
+                    <!-- Cenário 3: Desconectar ESP32 -->
+                    <button id="sim-desconectado" onclick="setScenario('desconectado')" class="bg-white hover:bg-slate-50 text-slate-700 p-3.5 rounded-xl text-left border border-slate-200/80 transition-all flex flex-col justify-between shadow-sm">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="wifi-off" class="w-4 h-4 text-slate-500"></i>
+                                <span class="font-bold text-sm text-slate-800">Desconectar ESP32</span>
+                            </div>
+                            <span id="badge-desconectado" class="hidden text-[10px] bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-medium">(ativo)</span>
+                        </div>
+                        <span class="text-[11px] text-slate-500 leading-snug">Perda de comunicação</span>
+                    </button>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="py-6 border-t border-slate-200/60 mt-10">
+        <p class="text-center text-xs text-slate-500 font-medium">
+            StopLeak — monitoramento inteligente de vazamentos
+        </p>
+    </footer>
+
+    <!-- Script de Funcionamento e Lógica do Gráfico -->
+    <script>
+        lucide.createIcons();
+
+        // Variáveis globais de controle
+        let scenario = 'normal';
+        let totalVolume = 23.5;
+        let secondsElapsed = 102; // 00:01:42
+        let currentFlow = 2.5;
+
+        // Cronômetro formatado HH:MM:SS
+        function formatTime(sec) {
+            const h = String(Math.floor(sec / 3600)).padStart(2, '0');
+            const m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
+            const s = String(sec % 60).padStart(2, '0');
+            return `${h}:${m}:${s}`;
+        }
+
+        // Timer contínuo
+        setInterval(() => {
+            secondsElapsed++;
+            document.getElementById('m-tempo').innerText = formatTime(secondsElapsed);
+
+            // Acumular Volume Total
+            if (scenario !== 'desconectado') {
+                totalVolume += (currentFlow / 60);
+                document.getElementById('m-volume').innerText = `${totalVolume.toFixed(1).replace('.', ',')} L`;
+            }
+        }, 1000);
+
+        // Inicialização do Gráfico Chart.js
+        const ctx = document.getElementById('flowChart').getContext('2d');
+
+        // Criação de rótulos de tempo iniciais no formato HH:MM:SS
+        const initialLabels = [];
+        const now = new Date();
+        for (let i = 12; i >= 0; i--) {
+            const d = new Date(now.getTime() - i * 5000);
+            initialLabels.push(d.toTimeString().split(' ')[0]);
+        }
+
+        const initialFlowData = [2.8, 3.1, 2.5, 3.0, 2.7, 3.2, 2.8, 3.1, 2.6, 3.3, 2.9, 2.7, 2.5];
+        const limitData = new Array(initialLabels.length).fill(6.0);
+
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: initialLabels,
+                datasets: [
+                    {
+                        label: 'Limite (6 L/min)',
+                        data: limitData,
+                        borderColor: '#dc2626',
+                        borderWidth: 1.5,
+                        borderDash: [6, 4],
+                        pointRadius: 0,
+                        fill: false
+                    },
+                    {
+                        label: 'Vazão Atual',
+                        data: initialFlowData,
+                        borderColor: '#026aa7',
+                        borderWidth: 2.5,
+                        pointRadius: 0,
+                        tension: 0.35,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#ffffff',
+                        titleColor: '#334155',
+                        bodyColor: '#026aa7',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 10,
+                        displayColors: false,
+                        callbacks: {
+                            title: (items) => `Horário: ${items[0].label}`,
+                            label: (item) => item.datasetIndex === 1 ? `Vazão: ${item.raw.toFixed(1).replace('.', ',')} L/min` : ''
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 12,
+                        ticks: { stepSize: 3, color: '#64748b' },
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: {
+                        ticks: { color: '#64748b', maxRotation: 0 },
+                        grid: { color: '#f1f5f9' }
+                    }
+                }
+            }
+        });
+
+        // Atualização ao vivo dos dados do gráfico a cada 2 segundos
+        setInterval(() => {
+            const timeStr = new Date().toTimeString().split(' ')[0];
+
+            if (scenario === 'normal') {
+                currentFlow = 2.4 + Math.random() * 0.9;
+            } else if (scenario === 'vazamento') {
+                currentFlow = 9.5 + Math.random() * 2.2;
+            } else {
+                currentFlow = 0.0;
+            }
+
+            document.getElementById('m-vazao').innerText = `${currentFlow.toFixed(1).replace('.', ',')} L/min`;
+
+            chart.data.labels.shift();
+            chart.data.labels.push(timeStr);
+            chart.data.datasets[1].data.shift();
+            chart.data.datasets[1].data.push(currentFlow);
+            chart.data.datasets[0].data = new Array(chart.data.labels.length).fill(6.0);
+            chart.update('none');
+        }, 2000);
+
+        // Seleção de Cenários na Simulação
+        function setScenario(sc) {
+            scenario = sc;
+
+            const btnN = document.getElementById('sim-normal');
+            const btnV = document.getElementById('sim-vazamento');
+            const btnD = document.getElementById('sim-desconectado');
+
+            const bN = document.getElementById('badge-normal');
+            const bV = document.getElementById('badge-vazamento');
+            const bD = document.getElementById('badge-desconectado');
+
+            [btnN, btnV, btnD].forEach(b => b.className = "bg-white hover:bg-slate-50 text-slate-700 p-3.5 rounded-xl text-left border border-slate-200/80 transition-all flex flex-col justify-between shadow-sm");
+            [bN, bV, bD].forEach(b => b.classList.add('hidden'));
+
+            const dot = document.getElementById('m-status-dot');
+            const text = document.getElementById('m-status-text');
+
+            if (sc === 'normal') {
+                btnN.className = "bg-[#026aa7] text-white p-3.5 rounded-xl text-left border border-[#026aa7] transition-all flex flex-col justify-between shadow-sm";
+                bN.classList.remove('hidden');
+                dot.className = "w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block shadow-sm";
+                text.innerText = "Aberta · Ligada";
+            } else if (sc === 'vazamento') {
+                btnV.className = "bg-red-600 text-white p-3.5 rounded-xl text-left border border-red-600 transition-all flex flex-col justify-between shadow-sm";
+                bV.classList.remove('hidden');
+                dot.className = "w-3.5 h-3.5 rounded-full bg-red-500 inline-block shadow-sm animate-pulse";
+                text.innerText = "Alerta de Vazamento";
+            } else if (sc === 'desconectado') {
+                btnD.className = "bg-slate-700 text-white p-3.5 rounded-xl text-left border border-slate-700 transition-all flex flex-col justify-between shadow-sm";
+                bD.classList.remove('hidden');
+                dot.className = "w-3.5 h-3.5 rounded-full bg-slate-400 inline-block shadow-sm";
+                text.innerText = "Offline";
+            }
+        }
+
+        // Função de Reinício da Contagem
+        function reiniciarContagem() {
+            secondsElapsed = 0;
+            totalVolume = 0.0;
+            document.getElementById('m-tempo').innerText = "00:00:00";
+            document.getElementById('m-volume').innerText = "0,0 L";
+        }
+    </script>
+</body>
+</html>

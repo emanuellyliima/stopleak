@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StopLeak — Painel de Controle</title>
+<!-- Script de Persistência de Acessibilidade (Cole no <head> de TODAS as páginas) -->
+<script>
+  function aplicarAcessibilidadeGlobal() {
+    const altoContraste = localStorage.getItem('stopLeak_altoContraste') === 'true';
+    const tamanhoFonte = localStorage.getItem('stopLeak_tamanhoFonte') || '100';
+
+    // Aplica Alto Contraste no HTML
+    if (altoContraste) {
+      document.documentElement.classList.add('alto-contraste');
+    } else {
+      document.documentElement.classList.remove('alto-contraste');
+    }
+
+    // Aplica Tamanho de Fonte Global
+    document.documentElement.style.fontSize = `${tamanhoFonte}%`;
+  }
+
+  // Executa imediatamente no carregamento da página
+  aplicarAcessibilidadeGlobal();
+</script>
+
+<!-- Estilos CSS para Alto Contraste-->
+<style>
+  /* --- Estilo Padrão --- */
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f2f7f9;
+    color: #1e293b;
+  }
+
+  /* --- Modo de Alto Contraste Ajustado --- */
+  html.alto-contraste body {
+    background-color: #0b0f19 !important;
+    color: #ffffff !important;
+  }
+
+  /* Cabeçalho e Rodapé */
+  html.alto-contraste header,
+  html.alto-contraste footer {
+    background-color: #111827 !important;
+    border-color: #374151 !important;
+  }
+
+  /* Cards e Contêineres */
+  html.alto-contraste main div.bg-white,
+  html.alto-contraste main div.bg-\[\#e7f0f5\],
+  html.alto-contraste main div.bg-\[\#eaf4f8\] {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+  }
+
+  /* Títulos em branco puro */
+  html.alto-contraste h1,
+  html.alto-contraste h2,
+  html.alto-contraste h3,
+  html.alto-contraste h4 {
+    color: #ffffff !important;
+  }
+
+  /* Textos principais e rótulos dos cards em branco */
+  html.alto-contraste .text-slate-900,
+  html.alto-contraste .text-slate-800,
+  html.alto-contraste .text-slate-700,
+  html.alto-contraste .text-slate-600 {
+    color: #ffffff !important;
+  }
+
+  /* Subtextos em cinza claro legível */
+  html.alto-contraste .text-slate-500 {
+    color: #94a3b8 !important;
+  }
+
+  /* Destaque e visibilidade dos círculos dos ícones superiores */
+  html.alto-contraste .bg-emerald-50,
+  html.alto-contraste .bg-sky-50,
+  html.alto-contraste .bg-blue-50,
+  html.alto-contraste .bg-red-50,
+  html.alto-contraste .bg-amber-50 {
+    background-color: #334155 !important;
+    border-color: #64748b !important;
+  }
+
+  /* Forçar cores vibrantes nos ícones para destacá-los no fundo escuro */
+  html.alto-contraste .text-emerald-600 {
+    color: #34d399 !important;
+  }
+  html.alto-contraste .text-sky-600 {
+    color: #38bdf8 !important;
+  }
+  html.alto-contraste .text-amber-500,
+  html.alto-contraste .text-amber-600 {
+    color: #fbbf24 !important;
+  }
+  html.alto-contraste .text-red-600 {
+    color: #f87171 !important;
+  }
+
+  /* Botões de navegação inativos */
+  html.alto-contraste nav a:not(.bg-\[\#005288\]):not(.bg-\[\#026aa7\]) {
+    color: #ffffff !important;
+    border: 1px solid #475569 !important;
+  }
+
+  /* Botões de simulação e botões secundários */
+  html.alto-contraste button.bg-white,
+  html.alto-contraste button.bg-slate-50 {
+    background-color: #334155 !important;
+    color: #ffffff !important;
+    border-color: #64748b !important;
+  }
+</style>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+
+  <!-- Lucide Icons via UMD (mesma versão estável das outras abas) -->
+  <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+
+  <!-- Fonte Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f2f7f9;
+      color: #1e293b;
+    }
+    .card-transition {
+      transition: all 0.25s ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased">
+
+  <div>
+    <!-- Cabeçalho (Header) -->
+    <header class="bg-white border-b border-slate-200/80 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <!-- Logo -->
+        <div class="flex items-center gap-2.5">
+          <div class="bg-[#005288] text-white p-2 rounded-xl flex items-center justify-center shadow-sm">
+            <i data-lucide="droplet" class="w-5 h-5 fill-current"></i>
+          </div>
+          <span class="text-xl font-bold tracking-tight text-slate-800">StopLeak</span>
+        </div>
+
+        <!-- Navegação Superior -->
+        <nav class="hidden md:flex items-center gap-1 sm:gap-2">
+          <a href="index.html" class="bg-[#005288] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition shadow-sm">
+            <i data-lucide="gauge" class="w-4 h-4"></i>
+            Painel
+          </a>
+          <a href="monitoramento.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+            <i data-lucide="activity" class="w-4 h-4"></i>
+            Monitoramento
+          </a>
+          <a href="historico.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+            <i data-lucide="history" class="w-4 h-4"></i>
+            Histórico
+          </a>
+          <a href="configuracoes.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+            <i data-lucide="settings" class="w-4 h-4"></i>
+            Configurações
+          </a>
+          <a href="ajuda.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+            <i data-lucide="help-circle" class="w-4 h-4"></i>
+            Ajuda
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      
+      <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Painel de controle</h1>
+      </div>
+
+      <!-- Grid de 6 Cards de Status -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-6">
+        
+        <!-- Card 1: Status do Sistema -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Status do sistema</span>
+            <div id="icon-bg-status" class="w-9 h-9 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
+              <i data-lucide="check" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center gap-2.5 mb-1">
+              <span id="dot-status" class="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block shadow-sm"></span>
+              <span id="text-status" class="text-2xl font-bold text-slate-800">Normal</span>
+            </div>
+            <p id="sub-status" class="text-xs text-slate-500">Nenhuma anomalia nos últimos minutos</p>
+          </div>
+        </div>
+
+        <!-- Card 2: Vazão atual -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Vazão atual</span>
+            <div class="w-9 h-9 rounded-full bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600">
+              <i data-lucide="activity" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-baseline gap-1 mb-1">
+              <span id="val-vazao" class="text-3xl font-bold text-slate-800">3,1</span>
+              <span class="text-base font-semibold text-slate-600">L/min</span>
+            </div>
+            <p class="text-xs text-slate-500">Leitura ao vivo do sensor YF-S201</p>
+          </div>
+        </div>
+
+        <!-- Card 3: Estado da válvula -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Estado da válvula</span>
+            <div id="icon-bg-valvula" class="w-9 h-9 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
+              <i data-lucide="waves" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center gap-2.5 mb-1">
+              <span id="dot-valvula" class="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block shadow-sm"></span>
+              <span id="text-valvula" class="text-2xl font-bold text-slate-800">Aberta</span>
+            </div>
+            <p id="sub-valvula" class="text-xs text-slate-500">Água circulando</p>
+          </div>
+        </div>
+
+        <!-- Card 4: Estado da bomba -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Estado da bomba</span>
+            <div id="icon-bg-bomba" class="w-9 h-9 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
+              <i data-lucide="power" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center gap-2.5 mb-1">
+              <span id="dot-bomba" class="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block shadow-sm"></span>
+              <span id="text-bomba" class="text-2xl font-bold text-slate-800">Ligada</span>
+            </div>
+            <p id="sub-bomba" class="text-xs text-slate-500">Pressurizando o sistema</p>
+          </div>
+        </div>
+
+        <!-- Card 5: Dispositivo ESP32 -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Dispositivo ESP32</span>
+            <div id="icon-bg-esp32" class="w-9 h-9 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
+              <i data-lucide="wifi" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center gap-2.5 mb-1">
+              <span id="dot-esp32" class="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block shadow-sm"></span>
+              <span id="text-esp32" class="text-2xl font-bold text-slate-800">Conectado</span>
+            </div>
+            <p id="sub-esp32" class="text-xs text-slate-500">Wi-Fi estável · sinal bom</p>
+          </div>
+        </div>
+
+        <!-- Card 6: Alertas registrados -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Alertas registrados</span>
+            <div id="icon-bg-alertas" class="w-9 h-9 rounded-full bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600">
+              <i data-lucide="bell" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-baseline gap-1 mb-1">
+              <span id="val-alertas" class="text-3xl font-bold text-slate-800">2</span>
+              <span class="text-lg font-semibold text-slate-800">alertas</span>
+            </div>
+            <p id="sub-alertas" class="text-xs text-slate-500">Nenhum alerta ativo</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Seções Inferiores: Ações Rápidas & Simulação -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        
+        <!-- Ações Rápidas (5 cols) -->
+        <div class="lg:col-span-5 bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 mb-1">Ações rápidas</h2>
+            <p class="text-xs text-slate-500 mb-6">Ações críticas pedem confirmação antes de serem executadas.</p>
+            
+            <div class="flex flex-wrap items-center gap-3">
+              <button id="btn-toggle-valvula" onclick="toggleValvula()" class="bg-[#ba1a1a] hover:bg-[#961010] active:scale-95 text-white font-medium px-4 py-2.5 rounded-xl text-sm flex items-center gap-2 transition-all shadow-sm">
+                <i data-lucide="waves" class="w-4 h-4"></i>
+                <span id="lbl-btn-valvula">Fechar válvula</span>
+              </button>
+
+              <button id="btn-toggle-bomba" onclick="toggleBomba()" class="bg-[#ba1a1a] hover:bg-[#961010] active:scale-95 text-white font-medium px-4 py-2.5 rounded-xl text-sm flex items-center gap-2 transition-all shadow-sm">
+                <i data-lucide="power" class="w-4 h-4"></i>
+                <span id="lbl-btn-bomba">Desligar bomba</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simulação em Tempo Real (7 cols) -->
+        <div class="lg:col-span-7 bg-[#e7f0f5] p-6 rounded-2xl border border-sky-100 shadow-sm">
+          <h2 class="text-lg font-bold text-slate-900 mb-1">Simulação em tempo real</h2>
+          <p class="text-xs text-slate-600 mb-5">Use os cenários abaixo para testar todos os estados do sistema sem hardware conectado.</p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            
+            <!-- Opção 1: Normal -->
+            <button id="sim-normal" onclick="setSimulacao('normal')" class="bg-[#005288] text-white p-3.5 rounded-xl text-left border border-[#005288] transition-all flex flex-col justify-between shadow-sm">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="droplet" class="w-4 h-4"></i>
+                  <span class="font-bold text-sm">Fluxo normal</span>
+                </div>
+                <span id="badge-normal" class="text-[10px] bg-white/20 text-white px-1.5 py-0.5 rounded font-medium">(ativo)</span>
+              </div>
+              <span class="text-[11px] opacity-90 leading-snug">Vazão entre 2 e 4 L/min</span>
+            </button>
+
+            <!-- Opção 2: Vazamento -->
+            <button id="sim-vazamento" onclick="setSimulacao('vazamento')" class="bg-white hover:bg-slate-50 text-slate-700 p-3.5 rounded-xl text-left border border-slate-200/80 transition-all flex flex-col justify-between shadow-sm">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-500"></i>
+                  <span class="font-bold text-sm text-slate-800">Disparar vazamento</span>
+                </div>
+                <span id="badge-vazamento" class="hidden text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-medium">(ativo)</span>
+              </div>
+              <span class="text-[11px] text-slate-500 leading-snug">Vazão acima do limite</span>
+            </button>
+
+            <!-- Opção 3: Desconectar -->
+            <button id="sim-desconectado" onclick="setSimulacao('desconectado')" class="bg-white hover:bg-slate-50 text-slate-700 p-3.5 rounded-xl text-left border border-slate-200/80 transition-all flex flex-col justify-between shadow-sm">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="wifi-off" class="w-4 h-4 text-slate-500"></i>
+                  <span class="font-bold text-sm text-slate-800">Desconectar ESP32</span>
+                </div>
+                <span id="badge-desconectado" class="hidden text-[10px] bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-medium">(ativo)</span>
+              </div>
+              <span class="text-[11px] text-slate-500 leading-snug">Perda de comunicação</span>
+            </button>
+
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Rodapé -->
+  <footer class="py-6 border-t border-slate-200/60 mt-10">
+    <p class="text-center text-xs text-slate-500 font-medium">
+      StopLeak — monitoramento inteligente de vazamentos
+    </p>
+  </footer>
+
+  <!-- Modal de Confirmação -->
+  <div id="custom-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-200">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl border border-slate-100">
+      <h3 id="modal-title" class="text-lg font-bold text-slate-900 mb-2">Confirmação</h3>
+      <p id="modal-msg" class="text-sm text-slate-600 mb-6">Deseja realmente realizar esta ação?</p>
+      <div class="flex justify-end gap-3">
+        <button onclick="closeModal()" class="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-all">Cancelar</button>
+        <button id="modal-confirm-btn" class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-xl transition-all shadow-sm">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lógica JavaScript Estável -->
+  <script>
+    // Renderiza ícones
+    lucide.createIcons();
+
+    // Estado Geral
+    const state = {
+      valvulaAberta: true,
+      bombaLigada: true,
+      espConectado: true,
+      cenario: 'normal',
+      vazaoAtual: 3.1,
+      vazaoInterval: null
+    };
+
+    function startVazaoSimulation() {
+      if (state.vazaoInterval) clearInterval(state.vazaoInterval);
+      
+      state.vazaoInterval = setInterval(() => {
+        if (!state.espConectado) {
+          document.getElementById('val-vazao').innerText = "0,0";
+          return;
+        }
+
+        if (!state.valvulaAberta || !state.bombaLigada) {
+          state.vazaoAtual = Math.max(0, state.vazaoAtual - 0.5);
+        } else if (state.cenario === 'normal') {
+          const delta = (Math.random() * 0.4 - 0.2);
+          state.vazaoAtual = Math.min(Math.max(2.5, state.vazaoAtual + delta), 3.8);
+        } else if (state.cenario === 'vazamento') {
+          const delta = (Math.random() * 1.2 - 0.6);
+          state.vazaoAtual = Math.min(Math.max(14.0, state.vazaoAtual + delta), 18.5);
+        }
+
+        document.getElementById('val-vazao').innerText = state.vazaoAtual.toFixed(1).replace('.', ',');
+      }, 1200);
+    }
+
+    function toggleValvula() {
+      const acao = state.valvulaAberta ? 'FECHAR' : 'ABRIR';
+      showModal(
+        `Confirmar Válvula`,
+        `Tem certeza que deseja ${acao.toLowerCase()} a válvula principal do sistema?`,
+        () => {
+          state.valvulaAberta = !state.valvulaAberta;
+          updateUI();
+        }
+      );
+    }
+
+    function toggleBomba() {
+      const acao = state.bombaLigada ? 'DESLIGAR' : 'LIGAR';
+      showModal(
+        `Confirmar Bomba`,
+        `Tem certeza que deseja ${acao.toLowerCase()} a bomba de água?`,
+        () => {
+          state.bombaLigada = !state.bombaLigada;
+          updateUI();
+        }
+      );
+    }
+
+    function setSimulacao(cenario) {
+      state.cenario = cenario;
+
+      if (cenario === 'normal') {
+        state.espConectado = true;
+        state.valvulaAberta = true;
+        state.bombaLigada = true;
+        state.vazaoAtual = 3.1;
+      } else if (cenario === 'vazamento') {
+        state.espConectado = true;
+        state.valvulaAberta = true;
+        state.bombaLigada = true;
+        state.vazaoAtual = 16.4;
+      } else if (cenario === 'desconectado') {
+        state.espConectado = false;
+        state.vazaoAtual = 0.0;
+      }
+
+      updateUI();
+    }
+
+    function updateUI() {
+      document.getElementById('lbl-btn-valvula').innerText = state.valvulaAberta ? 'Fechar válvula' : 'Abrir válvula';
+      document.getElementById('lbl-btn-bomba').innerText = state.bombaLigada ? 'Desligar bomba' : 'Ligar bomba';
+
+      const dotValvula = document.getElementById('dot-valvula');
+      const textValvula = document.getElementById('text-valvula');
+      const subValvula = document.getElementById('sub-valvula');
+
+      if (state.valvulaAberta) {
+        dotValvula.className = "w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block shadow-sm";
+        textValvula.innerText = "Aberta";
+        subValvula.innerText = "Água circulando";
+      } else {
+        dotValvula.className = "w-3.5 h-3.5 rounded-full bg-red-500 inline-block shadow-sm";
+        textValvula.innerText = "Fechada";
+        subValvula.innerText = "Fluxo bloqueado";
+      }
+
+      const dotBomba = document.getElementById('dot-bomba');
+      const textBomba = document.getElementById('text-bomba');
+      const subBomba = document.getElementById('sub-bomba');
+
+      if (state.bombaLigada) {
+        dotBomba.className = "w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block shadow-sm";
+        textBomba.innerText = "Ligada";
+        subBomba.innerText = "Pressurizando o sistema";
+      } else {
+        dotBomba.className = "w-3.5 h-3.5 rounded-full bg-slate-400 inline-block shadow-sm";
+        textBomba.innerText = "Desligada";
+        subBomba.innerText = "Sem pressurização";
+      }
+
+      const dotEsp = document.getElementById('dot-esp32');
+      const textEsp = document.getElementById('text-esp32');
+      const subEsp = document.getElementById('sub-esp32');
+
+      if (state.espConectado) {
+        dotEsp.className = "w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block shadow-sm";
+        textEsp.innerText = "Conectado";
+        subEsp.innerText = "Wi-Fi estável · sinal bom";
+      } else {
+        dotEsp.className = "w-3.5 h-3.5 rounded-full bg-slate-400 inline-block shadow-sm";
+        textEsp.innerText = "Offline";
+        subEsp.innerText = "Sem conexão com ESP32";
+      }
+
+      const dotStatus = document.getElementById('dot-status');
+      const textStatus = document.getElementById('text-status');
+      const subStatus = document.getElementById('sub-status');
+      const valAlertas = document.getElementById('val-alertas');
+      const subAlertas = document.getElementById('sub-alertas');
+
+      if (!state.espConectado) {
+        dotStatus.className = "w-3.5 h-3.5 rounded-full bg-amber-500 inline-block shadow-sm";
+        textStatus.innerText = "Atenção";
+        subStatus.innerText = "Hardware desconectado";
+        valAlertas.innerText = "3";
+        subAlertas.innerText = "1 alerta de conexão ativo";
+      } else if (state.cenario === 'vazamento') {
+        dotStatus.className = "w-3.5 h-3.5 rounded-full bg-red-500 inline-block shadow-sm";
+        textStatus.innerText = "Vazamento!";
+        subStatus.innerText = "Anomalia de alta vazão detectada";
+        valAlertas.innerText = "4";
+        subAlertas.innerText = "1 Alerta crítico ativo!";
+      } else {
+        dotStatus.className = "w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block shadow-sm";
+        textStatus.innerText = "Normal";
+        subStatus.innerText = "Nenhuma anomalia nos últimos minutos";
+        valAlertas.innerText = "2";
+        subAlertas.innerText = "Nenhum alerta ativo";
+      }
+
+      updateSimulationBadges();
+    }
+
+    function updateSimulationBadges() {
+      const btnNormal = document.getElementById('sim-normal');
+      const badgeNormal = document.getElementById('badge-normal');
+
+      const btnVazamento = document.getElementById('sim-vazamento');
+      const badgeVazamento = document.getElementById('badge-vazamento');
+
+      const btnDesconectado = document.getElementById('sim-desconectado');
+      const badgeDesconectado = document.getElementById('badge-desconectado');
+
+      [btnNormal, btnVazamento, btnDesconectado].forEach(b => {
+        b.className = "bg-white hover:bg-slate-50 text-slate-700 p-3.5 rounded-xl text-left border border-slate-200/80 transition-all flex flex-col justify-between shadow-sm";
+      });
+      [badgeNormal, badgeVazamento, badgeDesconectado].forEach(b => b.classList.add('hidden'));
+
+      if (state.cenario === 'normal') {
+        btnNormal.className = "bg-[#005288] text-white p-3.5 rounded-xl text-left border border-[#005288] transition-all flex flex-col justify-between shadow-sm";
+        badgeNormal.classList.remove('hidden');
+      } else if (state.cenario === 'vazamento') {
+        btnVazamento.className = "bg-red-600 text-white p-3.5 rounded-xl text-left border border-red-600 transition-all flex flex-col justify-between shadow-sm";
+        badgeVazamento.classList.remove('hidden');
+      } else if (state.cenario === 'desconectado') {
+        btnDesconectado.className = "bg-slate-700 text-white p-3.5 rounded-xl text-left border border-slate-700 transition-all flex flex-col justify-between shadow-sm";
+        badgeDesconectado.classList.remove('hidden');
+      }
+    }
+
+    let modalCallback = null;
+
+    function showModal(title, message, onConfirm) {
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('modal-msg').innerText = message;
+      modalCallback = onConfirm;
+
+      const modal = document.getElementById('custom-modal');
+      modal.classList.remove('hidden');
+      setTimeout(() => modal.classList.remove('opacity-0'), 10);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('custom-modal');
+      modal.classList.add('opacity-0');
+      setTimeout(() => modal.classList.add('hidden'), 200);
+      modalCallback = null;
+    }
+
+    document.getElementById('modal-confirm-btn').addEventListener('click', () => {
+      if (modalCallback) modalCallback();
+      closeModal();
+    });
+
+    startVazaoSimulation();
+  </script>
+</body>
+</html>
