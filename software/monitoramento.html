@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StopLeak — Monitoramento</title>
-<!-- Script de Persistência de Acessibilidade (Cole no <head> de TODAS as páginas) -->
+<!-- Script de Persistência de Acessibilidade -->
 <script>
   function aplicarAcessibilidadeGlobal() {
     const altoContraste = localStorage.getItem('stopLeak_altoContraste') === 'true';
@@ -25,7 +25,7 @@
   aplicarAcessibilidadeGlobal();
 </script>
 
-<!-- Estilos CSS para Alto Contraste (Cole no <style> de TODAS as páginas) -->
+<!-- Estilos CSS para Alto Contraste  -->
 <style>
   /* --- Estilo Padrão --- */
   body {
@@ -115,7 +115,6 @@
     border-color: #64748b !important;
   }
 </style>
-    <!-- Desativa o aviso de desenvolvimento do Tailwind CDN -->
     <script>
         const origWarn = console.warn;
         console.warn = function(...args) {
