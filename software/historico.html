@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -77,7 +78,7 @@
 
   <script>
     const origWarn = console.warn;
-    console.warn = function(...args) {
+    console.warn = function (...args) {
       if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
       origWarn.apply(console, args);
     };
@@ -92,6 +93,7 @@
   <!-- Fonte Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body class="min-h-screen flex flex-col justify-between antialiased">
 
   <div>
@@ -105,45 +107,85 @@
           <span class="text-xl font-bold tracking-tight text-slate-800">StopLeak</span>
         </div>
 
+        <!-- Botão Menu Hambúrguer (Mobile) -->
+        <button id="btn-menu-mobile" onclick="toggleMenuMobile()" class="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+
+        <!-- Navegação Desktop -->
         <nav class="hidden md:flex items-center gap-1 sm:gap-2">
-          <a href="index.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+          <a href="index.html"
+            class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
             <i data-lucide="gauge" class="w-4 h-4"></i>
             Painel
           </a>
-          <a href="monitoramento.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+          <a href="monitoramento.html"
+            class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
             <i data-lucide="activity" class="w-4 h-4"></i>
             Monitoramento
           </a>
-          <a href="historico.html" class="bg-[#005288] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition shadow-sm">
+          <a href="historico.html"
+            class="bg-[#005288] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition shadow-sm">
             <i data-lucide="history" class="w-4 h-4"></i>
             Histórico
           </a>
-          <a href="configuracoes.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+          <a href="configuracoes.html"
+            class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
             <i data-lucide="settings" class="w-4 h-4"></i>
             Configurações
           </a>
-          <a href="ajuda.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+          <a href="ajuda.html"
+            class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
             <i data-lucide="help-circle" class="w-4 h-4"></i>
             Ajuda
           </a>
         </nav>
       </div>
+
+      <!-- Menu Dropdown Mobile -->
+      <nav id="menu-mobile" class="hidden md:hidden border-t border-slate-100 bg-white px-4 py-3 space-y-2">
+        <a href="index.html"
+          class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 transition">
+          <i data-lucide="gauge" class="w-4 h-4"></i>
+          Painel
+        </a>
+        <a href="monitoramento.html"
+          class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 transition">
+          <i data-lucide="activity" class="w-4 h-4"></i>
+          Monitoramento
+        </a>
+        <a href="historico.html"
+          class="bg-[#005288] text-white px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 transition shadow-sm">
+          <i data-lucide="history" class="w-4 h-4"></i>
+          Histórico
+        </a>
+        <a href="configuracoes.html"
+          class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 transition">
+          <i data-lucide="settings" class="w-4 h-4"></i>
+          Configurações
+        </a>
+        <a href="ajuda.html"
+          class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 transition">
+          <i data-lucide="help-circle" class="w-4 h-4"></i>
+          Ajuda
+        </a>
+      </nav>
     </header>
 
     <!-- Conteúdo do Histórico -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      
+
       <!-- Título e Ações da Página -->
       <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Histórico de ocorrências</h1>
           <p class="text-sm text-slate-500 mt-1">Registos de acionamento da bomba, válvula e alertas do sistema.</p>
         </div>
-        
+
         <!-- Grupo de Botões de Ação -->
         <div class="flex items-center gap-2.5 flex-wrap">
-
-          <button onclick="abrirModalLimpeza()" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-3.5 py-2 rounded-xl text-xs font-medium inline-flex items-center gap-2 transition shadow-xs">
+          <button onclick="abrirModalLimpeza()"
+            class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-3.5 py-2 rounded-xl text-xs font-medium inline-flex items-center gap-2 transition shadow-xs">
             <i data-lucide="trash-2" class="w-4 h-4"></i>
             Limpar Histórico
           </button>
@@ -182,7 +224,8 @@
   </footer>
 
   <!-- Modal de Detalhes da Ocorrência -->
-  <div id="modal-detalhes" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-200">
+  <div id="modal-detalhes"
+    class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-200">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-100">
       <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
         <h3 class="text-lg font-bold text-slate-900">Detalhes da Ocorrência</h3>
@@ -210,12 +253,14 @@
         </div>
         <div class="pt-2">
           <span class="text-slate-500 font-medium block mb-1">Descrição Técnica:</span>
-          <p id="m-descricao" class="text-slate-600 bg-slate-50 p-3 rounded-xl text-xs leading-relaxed border border-slate-100">--</p>
+          <p id="m-descricao"
+            class="text-slate-600 bg-slate-50 p-3 rounded-xl text-xs leading-relaxed border border-slate-100">--</p>
         </div>
       </div>
 
       <div class="mt-6 flex justify-end">
-        <button onclick="fecharModal()" class="bg-[#005288] text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-[#003d66] transition">
+        <button onclick="fecharModal()"
+          class="bg-[#005288] text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-[#003d66] transition">
           Fechar
         </button>
       </div>
@@ -223,19 +268,23 @@
   </div>
 
   <!-- Modal de Confirmação para Limpar Histórico -->
-  <div id="modal-limpar" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-200">
+  <div id="modal-limpar"
+    class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-200">
     <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl border border-slate-100 text-center">
       <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4">
         <i data-lucide="trash-2" class="w-6 h-6"></i>
       </div>
       <h3 class="text-lg font-bold text-slate-900 mb-2">Limpar todo o histórico?</h3>
-      <p class="text-sm text-slate-500 mb-6">Esta ação removerá todos os registros gravados do sistema e não poderá ser desfeita.</p>
-      
+      <p class="text-sm text-slate-500 mb-6">Esta ação removerá todos os registros gravados do sistema e não poderá ser
+        desfeita.</p>
+
       <div class="flex items-center justify-center gap-3">
-        <button onclick="fecharModalLimpieza()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium transition">
+        <button onclick="fecharModalLimpieza()"
+          class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium transition">
           Cancelar
         </button>
-        <button onclick="confirmarLimpeza()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition shadow-sm">
+        <button onclick="confirmarLimpeza()"
+          class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition shadow-sm">
           Sim, limpar
         </button>
       </div>
@@ -244,6 +293,12 @@
 
   <!-- Lógica JavaScript Principal -->
   <script>
+    // Função para Alternar o Menu Mobile
+    function toggleMenuMobile() {
+      const menu = document.getElementById('menu-mobile');
+      menu.classList.toggle('hidden');
+    }
+
     const CHAVE_HISTORICO = 'stopLeak_historico_eventos';
 
     const historicoPadrao = [
@@ -406,33 +461,11 @@
       carregarTabelaHistorico();
     }
 
-    // Botão de simulação rápida
-    let bombaLigadaSimulada = false;
-    function simularCliqueBomba() {
-      bombaLigadaSimulada = !bombaLigadaSimulada;
-      if (bombaLigadaSimulada) {
-        registrarNovoEvento(
-          'Bomba LIGADA',
-          'bomba',
-          '11,8 L/min',
-          'Acionamento manual (Teste)',
-          'A bomba de água foi ativada manualmente pelo botão do painel de controle.'
-        );
-      } else {
-        registrarNovoEvento(
-          'Bomba DESLIGADA',
-          'bomba',
-          '0,0 L/min',
-          'Desativação manual (Teste)',
-          'A bomba de água foi desligada manualmente pelo botão do painel de controle.'
-        );
-      }
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
       carregarTabelaHistorico();
       if (window.lucide) lucide.createIcons();
     });
   </script>
 </body>
+
 </html>
