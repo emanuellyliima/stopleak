@@ -1,124 +1,128 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StopLeak — Monitoramento</title>
-<!-- Script de Persistência de Acessibilidade (Cole no <head> de TODAS as páginas) -->
-<script>
-  function aplicarAcessibilidadeGlobal() {
-    const altoContraste = localStorage.getItem('stopLeak_altoContraste') === 'true';
-    const tamanhoFonte = localStorage.getItem('stopLeak_tamanhoFonte') || '100';
+    <!-- Script de Persistência de Acessibilidade (Cole no <head> de TODAS as páginas) -->
+    <script>
+        function aplicarAcessibilidadeGlobal() {
+            const altoContraste = localStorage.getItem('stopLeak_altoContraste') === 'true';
+            const tamanhoFonte = localStorage.getItem('stopLeak_tamanhoFonte') || '100';
 
-    // Aplica Alto Contraste no HTML
-    if (altoContraste) {
-      document.documentElement.classList.add('alto-contraste');
-    } else {
-      document.documentElement.classList.remove('alto-contraste');
-    }
+            // Aplica Alto Contraste no HTML
+            if (altoContraste) {
+                document.documentElement.classList.add('alto-contraste');
+            } else {
+                document.documentElement.classList.remove('alto-contraste');
+            }
 
-    // Aplica Tamanho de Fonte Global
-    document.documentElement.style.fontSize = `${tamanhoFonte}%`;
-  }
+            // Aplica Tamanho de Fonte Global
+            document.documentElement.style.fontSize = `${tamanhoFonte}%`;
+        }
 
-  // Executa imediatamente no carregamento da página
-  aplicarAcessibilidadeGlobal();
-</script>
+        // Executa imediatamente no carregamento da página
+        aplicarAcessibilidadeGlobal();
+    </script>
 
-<!-- Estilos CSS para Alto Contraste (Cole no <style> de TODAS as páginas) -->
-<style>
-  /* --- Estilo Padrão --- */
-  body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f2f7f9;
-    color: #1e293b;
-  }
+    <!-- Estilos CSS para Alto Contraste (Cole no <style> de TODAS as páginas) -->
+    <style>
+        /* --- Estilo Padrão --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f2f7f9;
+            color: #1e293b;
+        }
 
-  /* --- Modo de Alto Contraste Ajustado --- */
-  html.alto-contraste body {
-    background-color: #0b0f19 !important;
-    color: #ffffff !important;
-  }
+        /* --- Modo de Alto Contraste Ajustado --- */
+        html.alto-contraste body {
+            background-color: #0b0f19 !important;
+            color: #ffffff !important;
+        }
 
-  /* Cabeçalho e Rodapé */
-  html.alto-contraste header,
-  html.alto-contraste footer {
-    background-color: #111827 !important;
-    border-color: #374151 !important;
-  }
+        /* Cabeçalho e Rodapé */
+        html.alto-contraste header,
+        html.alto-contraste footer {
+            background-color: #111827 !important;
+            border-color: #374151 !important;
+        }
 
-  /* Cards e Contêineres */
-  html.alto-contraste main div.bg-white,
-  html.alto-contraste main div.bg-\[\#e7f0f5\],
-  html.alto-contraste main div.bg-\[\#eaf4f8\] {
-    background-color: #1e293b !important;
-    border-color: #475569 !important;
-  }
+        /* Cards e Contêineres */
+        html.alto-contraste main div.bg-white,
+        html.alto-contraste main div.bg-\[\#e7f0f5\],
+        html.alto-contraste main div.bg-\[\#eaf4f8\] {
+            background-color: #1e293b !important;
+            border-color: #475569 !important;
+        }
 
-  /* Títulos em branco puro */
-  html.alto-contraste h1,
-  html.alto-contraste h2,
-  html.alto-contraste h3,
-  html.alto-contraste h4 {
-    color: #ffffff !important;
-  }
+        /* Títulos em branco puro */
+        html.alto-contraste h1,
+        html.alto-contraste h2,
+        html.alto-contraste h3,
+        html.alto-contraste h4 {
+            color: #ffffff !important;
+        }
 
-  /* Textos principais e rótulos dos cards em branco */
-  html.alto-contraste .text-slate-900,
-  html.alto-contraste .text-slate-800,
-  html.alto-contraste .text-slate-700,
-  html.alto-contraste .text-slate-600 {
-    color: #ffffff !important;
-  }
+        /* Textos principais e rótulos dos cards em branco */
+        html.alto-contraste .text-slate-900,
+        html.alto-contraste .text-slate-800,
+        html.alto-contraste .text-slate-700,
+        html.alto-contraste .text-slate-600 {
+            color: #ffffff !important;
+        }
 
-  /* Subtextos em cinza claro legível */
-  html.alto-contraste .text-slate-500 {
-    color: #94a3b8 !important;
-  }
+        /* Subtextos em cinza claro legível */
+        html.alto-contraste .text-slate-500 {
+            color: #94a3b8 !important;
+        }
 
-  /* Destaque e visibilidade dos círculos dos ícones superiores */
-  html.alto-contraste .bg-emerald-50,
-  html.alto-contraste .bg-sky-50,
-  html.alto-contraste .bg-blue-50,
-  html.alto-contraste .bg-red-50,
-  html.alto-contraste .bg-amber-50 {
-    background-color: #334155 !important;
-    border-color: #64748b !important;
-  }
+        /* Destaque e visibilidade dos círculos dos ícones superiores */
+        html.alto-contraste .bg-emerald-50,
+        html.alto-contraste .bg-sky-50,
+        html.alto-contraste .bg-blue-50,
+        html.alto-contraste .bg-red-50,
+        html.alto-contraste .bg-amber-50 {
+            background-color: #334155 !important;
+            border-color: #64748b !important;
+        }
 
-  /* Forçar cores vibrantes nos ícones para destacá-los no fundo escuro */
-  html.alto-contraste .text-emerald-600 {
-    color: #34d399 !important;
-  }
-  html.alto-contraste .text-sky-600 {
-    color: #38bdf8 !important;
-  }
-  html.alto-contraste .text-amber-500,
-  html.alto-contraste .text-amber-600 {
-    color: #fbbf24 !important;
-  }
-  html.alto-contraste .text-red-600 {
-    color: #f87171 !important;
-  }
+        /* Forçar cores vibrantes nos ícones para destacá-los no fundo escuro */
+        html.alto-contraste .text-emerald-600 {
+            color: #34d399 !important;
+        }
 
-  /* Botões de navegação inativos */
-  html.alto-contraste nav a:not(.bg-\[\#005288\]):not(.bg-\[\#026aa7\]) {
-    color: #ffffff !important;
-    border: 1px solid #475569 !important;
-  }
+        html.alto-contraste .text-sky-600 {
+            color: #38bdf8 !important;
+        }
 
-  /* Botões de simulação e botões secundários */
-  html.alto-contraste button.bg-white,
-  html.alto-contraste button.bg-slate-50 {
-    background-color: #334155 !important;
-    color: #ffffff !important;
-    border-color: #64748b !important;
-  }
-</style>
+        html.alto-contraste .text-amber-500,
+        html.alto-contraste .text-amber-600 {
+            color: #fbbf24 !important;
+        }
+
+        html.alto-contraste .text-red-600 {
+            color: #f87171 !important;
+        }
+
+        /* Botões de navegação inativos */
+        html.alto-contraste nav a:not(.bg-\[\#005288\]):not(.bg-\[\#026aa7\]) {
+            color: #ffffff !important;
+            border: 1px solid #475569 !important;
+        }
+
+        /* Botões de simulação e botões secundários */
+        html.alto-contraste button.bg-white,
+        html.alto-contraste button.bg-slate-50 {
+            background-color: #334155 !important;
+            color: #ffffff !important;
+            border-color: #64748b !important;
+        }
+    </style>
     <!-- Desativa o aviso de desenvolvimento do Tailwind CDN -->
     <script>
         const origWarn = console.warn;
-        console.warn = function(...args) {
+        console.warn = function (...args) {
             if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
             origWarn.apply(console, args);
         };
@@ -142,57 +146,100 @@
             background-color: #f2f7f9;
             color: #1e293b;
         }
+
         .card-transition {
             transition: all 0.25s ease-in-out;
         }
     </style>
 </head>
+
 <body class="min-h-screen flex flex-col justify-between antialiased">
 
     <!-- Container Principal -->
     <div>
         <!-- Cabeçalho (Header) -->
-       <header class="bg-white border-b border-slate-200/80 sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-    <div class="flex items-center gap-2.5">
-      <div class="bg-[#005288] text-white p-2 rounded-xl flex items-center justify-center shadow-sm">
-        <i data-lucide="droplet" class="w-5 h-5 fill-current"></i>
-      </div>
-      <span class="text-xl font-bold tracking-tight text-slate-800">StopLeak</span>
-    </div>
+        <header class="bg-white border-b border-slate-200/80 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div class="bg-[#005288] text-white p-2 rounded-xl flex items-center justify-center shadow-sm">
+                        <i data-lucide="droplet" class="w-5 h-5 fill-current"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight text-slate-800">StopLeak</span>
+                </div>
 
-    <nav class="hidden md:flex items-center gap-1 sm:gap-2">
-      <a href="index.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
-        <i data-lucide="gauge" class="w-4 h-4"></i>
-        Painel
-      </a>
-      <a href="monitoramento.html" class="bg-[#005288] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition shadow-sm">
-        <i data-lucide="activity" class="w-4 h-4"></i>
-        Monitoramento
-      </a>
-      <a href="historico.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
-        <i data-lucide="history" class="w-4 h-4"></i>
-        Histórico
-      </a>
-      <a href="configuracoes.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
-        <i data-lucide="settings" class="w-4 h-4"></i>
-        Configurações
-      </a>
-      <a href="ajuda.html" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
-        <i data-lucide="help-circle" class="w-4 h-4"></i>
-        Ajuda
-      </a>
-    </nav>
-  </div>
-</header>
+                <!-- Botão Menu Hambúrguer (Mobile) -->
+                <button id="btn-menu-mobile" onclick="toggleMenuMobile()" class="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+
+                <!-- Navegação Desktop -->
+                <nav class="hidden md:flex items-center gap-1 sm:gap-2">
+                    <a href="index.html"
+                        class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+                        <i data-lucide="gauge" class="w-4 h-4"></i>
+                        Painel
+                    </a>
+                    <a href="monitoramento.html"
+                        class="bg-[#005288] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition shadow-sm">
+                        <i data-lucide="activity" class="w-4 h-4"></i>
+                        Monitoramento
+                    </a>
+                    <a href="historico.html"
+                        class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+                        <i data-lucide="history" class="w-4 h-4"></i>
+                        Histórico
+                    </a>
+                    <a href="configuracoes.html"
+                        class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+                        <i data-lucide="settings" class="w-4 h-4"></i>
+                        Configurações
+                    </a>
+                    <a href="ajuda.html"
+                        class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3.5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition">
+                        <i data-lucide="help-circle" class="w-4 h-4"></i>
+                        Ajuda
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Menu Dropdown Mobile -->
+            <nav id="menu-mobile" class="hidden md:hidden border-t border-slate-100 bg-white px-4 py-3 space-y-2">
+                <a href="index.html"
+                    class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 transition">
+                    <i data-lucide="gauge" class="w-4 h-4"></i>
+                    Painel
+                </a>
+                <a href="monitoramento.html"
+                    class="bg-[#005288] text-white px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 transition shadow-sm">
+                    <i data-lucide="activity" class="w-4 h-4"></i>
+                    Monitoramento
+                </a>
+                <a href="historico.html"
+                    class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 transition">
+                    <i data-lucide="history" class="w-4 h-4"></i>
+                    Histórico
+                </a>
+                <a href="configuracoes.html"
+                    class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 transition">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                    Configurações
+                </a>
+                <a href="ajuda.html"
+                    class="text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 transition">
+                    <i data-lucide="help-circle" class="w-4 h-4"></i>
+                    Ajuda
+                </a>
+            </nav>
+        </header>
 
         <!-- Conteúdo da Página de Monitoramento -->
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            
+
             <!-- Título e Botão de Ação Superior -->
             <div class="flex items-center justify-between mb-6">
                 <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Monitoramento</h1>
-                <button onclick="reiniciarContagem()" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-medium px-4 py-2 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2">
+                <button onclick="reiniciarContagem()"
+                    class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-medium px-4 py-2 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2">
                     <i data-lucide="rotate-ccw" class="w-4 h-4 text-slate-500"></i>
                     Reiniciar contagem
                 </button>
@@ -202,7 +249,8 @@
             <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm mb-6">
                 <div class="mb-4">
                     <h2 class="text-base font-bold text-slate-900">Vazão (L/min) por tempo</h2>
-                    <p class="text-xs text-slate-500 mt-0.5">A linha tracejada indica o limite de 6 L/min configurado para disparo de alerta.</p>
+                    <p class="text-xs text-slate-500 mt-0.5">A linha tracejada indica o limite de 6 L/min configurado
+                        para disparo de alerta.</p>
                 </div>
 
                 <!-- Canvas para Chart.js -->
@@ -213,12 +261,14 @@
 
             <!-- Cards de Métricas (Grid 4 colunas) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
-                
+
                 <!-- Card 1: Vazão Atual -->
-                <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
+                <div
+                    class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
                     <div class="flex items-center justify-between mb-3">
                         <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Vazão atual</span>
-                        <div class="w-9 h-9 rounded-full bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600">
+                        <div
+                            class="w-9 h-9 rounded-full bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600">
                             <i data-lucide="activity" class="w-5 h-5"></i>
                         </div>
                     </div>
@@ -228,10 +278,13 @@
                 </div>
 
                 <!-- Card 2: Volume Total Monitorado -->
-                <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
+                <div
+                    class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Volume total monitorado</span>
-                        <div class="w-9 h-9 rounded-full bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Volume total
+                            monitorado</span>
+                        <div
+                            class="w-9 h-9 rounded-full bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600">
                             <i data-lucide="droplet" class="w-5 h-5"></i>
                         </div>
                     </div>
@@ -241,10 +294,13 @@
                 </div>
 
                 <!-- Card 3: Tempo de Monitoramento -->
-                <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
+                <div
+                    class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Tempo de monitoramento</span>
-                        <div class="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Tempo de
+                            monitoramento</span>
+                        <div
+                            class="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600">
                             <i data-lucide="timer" class="w-5 h-5"></i>
                         </div>
                     </div>
@@ -255,16 +311,20 @@
                 </div>
 
                 <!-- Card 4: Válvula e Bomba -->
-                <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
+                <div
+                    class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between card-transition">
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Válvula e bomba</span>
-                        <div id="m-status-icon" class="w-9 h-9 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Válvula e
+                            bomba</span>
+                        <div id="m-status-icon"
+                            class="w-9 h-9 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
                             <i data-lucide="waves" class="w-5 h-5"></i>
                         </div>
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
-                            <span id="m-status-dot" class="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block shadow-sm"></span>
+                            <span id="m-status-dot"
+                                class="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block shadow-sm"></span>
                             <span id="m-status-text" class="text-xl font-bold text-slate-800">Aberta · Ligada</span>
                         </div>
                     </div>
@@ -275,42 +335,49 @@
             <!-- Card Simulação em Tempo Real -->
             <div class="bg-[#e7f0f5] p-6 rounded-2xl border border-sky-100 shadow-sm">
                 <h2 class="text-lg font-bold text-slate-900 mb-1">Simulação em tempo real</h2>
-                <p class="text-xs text-slate-600 mb-5">Use os cenários abaixo para testar todos os estados do sistema sem hardware conectado.</p>
+                <p class="text-xs text-slate-600 mb-5">Use os cenários abaixo para testar todos os estados do sistema
+                    sem hardware conectado.</p>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    
+
                     <!-- Cenário 1: Fluxo Normal -->
-                    <button id="sim-normal" onclick="setScenario('normal')" class="bg-[#026aa7] text-white p-3.5 rounded-xl text-left border border-[#026aa7] transition-all flex flex-col justify-between shadow-sm">
+                    <button id="sim-normal" onclick="setScenario('normal')"
+                        class="bg-[#026aa7] text-white p-3.5 rounded-xl text-left border border-[#026aa7] transition-all flex flex-col justify-between shadow-sm">
                         <div class="flex items-center justify-between mb-3">
                             <div class="flex items-center gap-2">
                                 <i data-lucide="droplet" class="w-4 h-4"></i>
                                 <span class="font-bold text-sm">Fluxo normal</span>
                             </div>
-                            <span id="badge-normal" class="text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-medium">(ativo)</span>
+                            <span id="badge-normal"
+                                class="text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-medium">(ativo)</span>
                         </div>
                         <span class="text-[11px] opacity-90 leading-snug">Vazão entre 2 e 4 L/min</span>
                     </button>
 
                     <!-- Cenário 2: Disparar Vazamento -->
-                    <button id="sim-vazamento" onclick="setScenario('vazamento')" class="bg-white hover:bg-slate-50 text-slate-700 p-3.5 rounded-xl text-left border border-slate-200/80 transition-all flex flex-col justify-between shadow-sm">
+                    <button id="sim-vazamento" onclick="setScenario('vazamento')"
+                        class="bg-white hover:bg-slate-50 text-slate-700 p-3.5 rounded-xl text-left border border-slate-200/80 transition-all flex flex-col justify-between shadow-sm">
                         <div class="flex items-center justify-between mb-3">
                             <div class="flex items-center gap-2">
                                 <i data-lucide="waves" class="w-4 h-4 text-amber-500"></i>
                                 <span class="font-bold text-sm text-slate-800">Disparar vazamento</span>
                             </div>
-                            <span id="badge-vazamento" class="hidden text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-medium">(ativo)</span>
+                            <span id="badge-vazamento"
+                                class="hidden text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-medium">(ativo)</span>
                         </div>
                         <span class="text-[11px] text-slate-500 leading-snug">Vazão acima do limite</span>
                     </button>
 
                     <!-- Cenário 3: Desconectar ESP32 -->
-                    <button id="sim-desconectado" onclick="setScenario('desconectado')" class="bg-white hover:bg-slate-50 text-slate-700 p-3.5 rounded-xl text-left border border-slate-200/80 transition-all flex flex-col justify-between shadow-sm">
+                    <button id="sim-desconectado" onclick="setScenario('desconectado')"
+                        class="bg-white hover:bg-slate-50 text-slate-700 p-3.5 rounded-xl text-left border border-slate-200/80 transition-all flex flex-col justify-between shadow-sm">
                         <div class="flex items-center justify-between mb-3">
                             <div class="flex items-center gap-2">
                                 <i data-lucide="wifi-off" class="w-4 h-4 text-slate-500"></i>
                                 <span class="font-bold text-sm text-slate-800">Desconectar ESP32</span>
                             </div>
-                            <span id="badge-desconectado" class="hidden text-[10px] bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-medium">(ativo)</span>
+                            <span id="badge-desconectado"
+                                class="hidden text-[10px] bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-medium">(ativo)</span>
                         </div>
                         <span class="text-[11px] text-slate-500 leading-snug">Perda de comunicação</span>
                     </button>
@@ -331,6 +398,12 @@
     <!-- Script de Funcionamento e Lógica do Gráfico -->
     <script>
         lucide.createIcons();
+
+        // Alternar Menu Mobile
+        function toggleMenuMobile() {
+            const menu = document.getElementById('menu-mobile');
+            menu.classList.toggle('hidden');
+        }
 
         // Variáveis globais de controle
         let scenario = 'normal';
@@ -498,4 +571,5 @@
         }
     </script>
 </body>
+
 </html>
